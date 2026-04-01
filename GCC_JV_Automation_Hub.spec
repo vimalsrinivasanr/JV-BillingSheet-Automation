@@ -5,7 +5,7 @@ a = Analysis(
     ['main_gui.py'],
     pathex=[],
     binaries=[],
-    datas=[('/opt/anaconda3/lib/python3.12/site-packages/customtkinter', 'customtkinter')],
+    datas=[('C:\\Users\\vimalsrinivasan.r\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\customtkinter', 'customtkinter')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,10 +35,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-)
-app = BUNDLE(
-    exe,
-    name='GCC_JV_Automation_Hub.app',
-    icon=None,
-    bundle_identifier=None,
 )
