@@ -22,6 +22,72 @@ class JVEngine:
 
         self.GL_COL_NAMES = ["gl_742234", "gl_742238", "gl_742235", "gl_742236", "gl_742237", "gl_842028"]
         self.GL_CODES = [742234, 742238, 742235, 742236, 742237, 842028]
+        self.last_filter_check = None
+
+    def _load_normalized_data(self, filepath):
+        """Load Stage-1 normalized file (sheet: Normalized) and map to engine schema."""
+        norm = pd.read_excel(filepath, sheet_name="Normalized", dtype=str).fillna("")
+
+        def col(name, fallback=""):
+            if name in norm.columns:
+                return norm[name]
+            if isinstance(fallback, str):
+                return pd.Series([fallback] * len(norm), index=norm.index)
+            return fallback
+
+        df = pd.DataFrame()
+        df["workday_id"] = col("Workday ID")
+        df["cap_center"] = col("Capability Center")
+        df["legal_entity"] = col("Legal Entity")
+        df["classification"] = col("Classification")
+        df["billed_status"] = col("Billed/ Unbilled")
+        df["ic_code"] = col("IC Code", "UNKNOWN")
+        df["invoice_no"] = col("Invoice No.")
+        df["emp_no_ref"] = col("EmpNo (ref)", df["workday_id"])
+        df["cap_center_ref"] = col("Capability Center (ref)", df["cap_center"])
+
+        # GL columns are expected from Stage 1 output
+        df["gl_742234"] = col("Recharge - Payroll", "0")
+        df["gl_742238"] = col("Recharge - Manager", "0")
+        df["gl_742235"] = col("Recharge - Leadership", "0")
+        df["gl_742236"] = col("Recharge - Desk Cost", "0")
+        df["gl_742237"] = col("Recharge - Retirals", "0")
+        df["gl_842028"] = col("Mark up", "0")
+
+        return df
+
+    def _load_legacy_billing_data(self, filepath, log_callback):
+        """Legacy fallback loader for raw billing sheet with historical index assumptions."""
+        raw = pd.read_excel(filepath, sheet_name="Billing sheet", header=None, dtype=str)
+        col_names = raw.iloc[2].tolist()
+        data = raw.iloc[3:].copy()
+        data.columns = col_names
+        data = data.reset_index(drop=True).fillna("")
+
+        mapping = {
+            "workday_id": 0, "cap_center": 6, "legal_entity": 41, "classification": 42,
+            "billed_status": 79, "ic_code": 80, "invoice_no": 82, "emp_no_ref": 83, "cap_center_ref": 84
+        }
+
+        df = pd.DataFrame()
+        df["workday_id"] = data.iloc[:, mapping["workday_id"]]
+        df["cap_center"] = data.iloc[:, mapping["cap_center"]]
+        df["legal_entity"] = data.iloc[:, mapping["legal_entity"]]
+        df["classification"] = data.iloc[:, mapping["classification"]]
+        df["billed_status"] = data.iloc[:, mapping["billed_status"]]
+        df["ic_code"] = data.iloc[:, mapping["ic_code"]]
+        df["invoice_no"] = data.iloc[:, mapping["invoice_no"]]
+        df["emp_no_ref"] = data.iloc[:, mapping["emp_no_ref"]]
+        df["cap_center_ref"] = data.iloc[:, mapping["cap_center_ref"]]
+
+        if len(data.columns) > 85:
+            for i, name in enumerate(self.GL_COL_NAMES):
+                df[name] = pd.to_numeric(data.iloc[:, 85 + i], errors="coerce").fillna(0.0)
+        else:
+            log_callback("Data Check: Missing extended columns. Calculating from raw A-AQ...")
+            df = self.calculate_virtual_columns(data, df)
+
+        return df
 
     def d2(self, val):
         """Round val to exactly 2 decimal places using Decimal."""
@@ -55,56 +121,65 @@ class JVEngine:
     def run_processing(self, filepath, log_callback=print, api_key=None):
         """Full processing pipeline."""
         log_callback(f"Loading {os.path.basename(filepath)}...")
-        raw = pd.read_excel(filepath, sheet_name="Billing sheet", header=None, dtype=str)
-        col_names = raw.iloc[2].tolist()
-        data = raw.iloc[3:].copy()
-        data.columns = col_names
-        data = data.reset_index(drop=True).fillna("")
-
-        mapping = None
-        if api_key:
-            from ai_mapper import AIMapper
-            log_callback("AI Engine: Analyzing schema with Gemini...")
-            mapper = AIMapper(api_key)
-            mapping = mapper.analyze_template(data.head(5))
-        
-        if mapping:
-            log_callback("AI Engine: Logic mapping discovered successfully.")
+        xls = pd.ExcelFile(filepath)
+        if "Normalized" in xls.sheet_names:
+            log_callback("Stage 2: Using Stage-1 normalized sheet.")
+            df = self._load_normalized_data(filepath)
+        elif "Billing sheet" in xls.sheet_names:
+            log_callback("Stage 2: Normalized sheet not found. Using legacy raw-sheet fallback.")
+            df = self._load_legacy_billing_data(filepath, log_callback)
         else:
-            log_callback("Process Engine: Using robust internal fallback rules.")
-            mapping = {
-                "workday_id": 0, "cap_center": 6, "legal_entity": 41, "classification": 42,
-                "billed_status": 79, "ic_code": 80, "invoice_no": 82, "emp_no_ref": 83, "cap_center_ref": 84
-            }
-
-        df = pd.DataFrame()
-        df["workday_id"] = data.iloc[:, mapping["workday_id"]]
-        df["cap_center"] = data.iloc[:, mapping["cap_center"]]
-        df["legal_entity"] = data.iloc[:, mapping["legal_entity"]]
-        df["classification"] = data.iloc[:, mapping["classification"]]
-        df["billed_status"] = data.iloc[:, mapping["billed_status"]] if "billed_status" in mapping else "Billed"
-        df["ic_code"] = data.iloc[:, mapping["ic_code"]] if "ic_code" in mapping else "UNKNOWN"
-        df["invoice_no"] = data.iloc[:, mapping["invoice_no"]] if "invoice_no" in mapping else ""
-        df["emp_no_ref"] = data.iloc[:, mapping["emp_no_ref"]] if "emp_no_ref" in mapping else df["workday_id"]
-        df["cap_center_ref"] = data.iloc[:, mapping["cap_center_ref"]] if "cap_center_ref" in mapping else df["cap_center"]
-
-        if len(data.columns) > 85:
-            for i, name in enumerate(self.GL_COL_NAMES):
-                df[name] = pd.to_numeric(data.iloc[:, 85+i], errors="coerce").fillna(0.0)
-        else:
-            log_callback("Data Check: Missing extended columns. Calculating from raw A-AQ...")
-            df = self.calculate_virtual_columns(data, df)
+            raise ValueError("Input file must contain 'Normalized' or 'Billing sheet' sheet.")
 
         log_callback("Filtering and reconciling data...")
-        for col in df.columns: df[col] = df[col].astype(str).str.strip()
-        df = df[df["workday_id"] != ""]
-        df = df[(df["classification"] == "Billable") & (df["billed_status"] == "Billed")]
+        pre = df.copy()
+        for col in ["workday_id", "cap_center", "legal_entity", "classification", "billed_status", "ic_code", "invoice_no", "emp_no_ref", "cap_center_ref"]:
+            df[col] = df[col].astype(str).str.strip()
+        for col in ["workday_id", "classification", "billed_status", "invoice_no"]:
+            pre[col] = pre[col].astype(str).str.strip()
+
+        df = df[df["workday_id"].isin(["", "nan", "None"]) == False]
+        df = df[
+            (df["classification"].str.lower() == "billable") &
+            (df["billed_status"].str.lower() == "billed")
+        ]
+        df = df[~df["invoice_no"].isin(["", "nan", "None"])]
+
+        self.last_filter_check = self._build_filter_check(pre, df)
+        log_callback(
+            f"Filter Check: total={self.last_filter_check['total_rows']}, "
+            f"used={self.last_filter_check['rows_used_for_jv']}, "
+            f"excluded={self.last_filter_check['excluded_rows']}"
+        )
         
         for col in self.GL_COL_NAMES:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
             
         df = df.sort_values(by=["invoice_no", "workday_id"]).reset_index(drop=True)
         return self._build_rows(df)
+
+    def _build_filter_check(self, pre_df, filtered_df):
+        """Create summary metrics for filter validation."""
+        total = len(pre_df)
+        valid_workday = (~pre_df["workday_id"].isin(["", "nan", "None"]))
+        billable = (pre_df["classification"].str.lower() == "billable")
+        billed = (pre_df["billed_status"].str.lower() == "billed")
+        invoice_present = (~pre_df["invoice_no"].isin(["", "nan", "None"]))
+
+        used_mask = valid_workday & billable & billed & invoice_present
+        excluded = pre_df[~used_mask].copy()
+
+        return {
+            "total_rows": int(total),
+            "rows_with_workday": int(valid_workday.sum()),
+            "billable_rows": int(billable.sum()),
+            "billed_rows": int(billed.sum()),
+            "rows_with_invoice": int(invoice_present.sum()),
+            "rows_used_for_jv": int(used_mask.sum()),
+            "excluded_rows": int((~used_mask).sum()),
+            "excluded_preview": excluded[["workday_id", "classification", "billed_status", "invoice_no"]].head(25),
+            "filtered_unique_invoices": int(filtered_df["invoice_no"].astype(str).nunique()) if len(filtered_df) else 0,
+        }
 
     def _get_full_row(self):
         """Returns a dict with all 37 SAP columns initialized to None."""
@@ -222,4 +297,26 @@ class JVEngine:
         ws.cell(row=check_row, column=amt_col_idx).value = f"=ROUND(SUM(J4:J{last_data_row}),2)"
         
         wb.save(out_path)
+
+        if self.last_filter_check:
+            wb = load_workbook(out_path)
+            ws = wb.create_sheet("Filter Check")
+            ws.append(["Metric", "Value"])
+            ws.append(["Total source rows", self.last_filter_check["total_rows"]])
+            ws.append(["Rows with Workday ID", self.last_filter_check["rows_with_workday"]])
+            ws.append(["Rows with Classification = Billable", self.last_filter_check["billable_rows"]])
+            ws.append(["Rows with Billed Status = Billed", self.last_filter_check["billed_rows"]])
+            ws.append(["Rows with Invoice No.", self.last_filter_check["rows_with_invoice"]])
+            ws.append(["Rows used for JV", self.last_filter_check["rows_used_for_jv"]])
+            ws.append(["Rows excluded", self.last_filter_check["excluded_rows"]])
+            ws.append(["Unique invoices in JV", self.last_filter_check["filtered_unique_invoices"]])
+            ws.append([])
+            ws.append(["Excluded Rows Preview", "", "", ""])
+            ws.append(["workday_id", "classification", "billed_status", "invoice_no"])
+            for row in self.last_filter_check["excluded_preview"].itertuples(index=False):
+                ws.append(list(row))
+            wb.save(out_path)
+
         log_callback(f"Balance check formula injected at J{check_row}")
+        if self.last_filter_check:
+            log_callback("Filter Check sheet created.")

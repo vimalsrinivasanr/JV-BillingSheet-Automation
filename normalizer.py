@@ -286,7 +286,7 @@ class BillingNormalizer:
         for h in headers:
             if not h.strip() or h not in data.columns:
                 continue
-            sample = data[h].dropna().astype(str).str.strip()
+            sample = self._col_series(data, h).dropna().astype(str).str.strip()
             sample = sample[sample != ""].head(50)
             for val in sample:
                 for pattern, canon in DATA_FINGERPRINTS:
@@ -305,7 +305,7 @@ class BillingNormalizer:
         for (canon, feb_idx, dtype, aliases) in GOLDEN_SCHEMA:
             src = col_map.get(canon)
             if src and src in data.columns:
-                col = data[src]
+                col = self._col_series(data, src)
                 if dtype == "num":
                     frames[canon] = pd.to_numeric(col, errors="coerce")
                 elif dtype == "date":
@@ -406,6 +406,13 @@ class BillingNormalizer:
         self.log("[Normalizer] GL recharge columns calculated.")
         return df
 
+    def _col_series(self, data, col_name):
+        """Return a single Series even when duplicate header names exist."""
+        s = data[col_name]
+        if isinstance(s, pd.DataFrame):
+            return s.iloc[:, 0]
+        return s
+
     # ─────────────────────────────────────────────────────────────────────────
     #  Step 6 – Write colour-coded Excel output
     # ─────────────────────────────────────────────────────────────────────────
@@ -452,8 +459,11 @@ class BillingNormalizer:
             "source_col": "Source Column Name",
             "method":     "Match Method",
         })
-        rpt.to_excel(wb, sheet_name="Mapping Report", index=False)
-        _autofit(wb["Mapping Report"])
+        ws_r = wb.create_sheet("Mapping Report")
+        ws_r.append(list(rpt.columns))
+        for row in rpt.itertuples(index=False):
+            ws_r.append(list(row))
+        _autofit(ws_r)
 
         # ── Warnings sheet
         ws_w = wb.create_sheet("Warnings & Actions")

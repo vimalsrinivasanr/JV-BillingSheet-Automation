@@ -4,7 +4,7 @@ import threading
 import os
 import pandas as pd
 from engine import JVEngine
-from decimal import Decimal
+from normalizer import BillingNormalizer
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -19,6 +19,7 @@ class App(ctk.CTk):
         # Configuration
         self.engine = None
         self.input_path = ""
+        self.normalized_path = ""
         self.output_dir = os.path.dirname(os.path.abspath(__file__))
 
         # UI Elements
@@ -63,12 +64,12 @@ class App(ctk.CTk):
         self.lbl_file = ctk.CTkLabel(self.main_frame, text="No file selected", text_color="gray")
         self.lbl_file.grid(row=2, column=0, padx=20, pady=0)
 
-        # Process Button
-        self.btn_run = ctk.CTkButton(self.main_frame, text="GENERATE SAP JV", height=50, 
+        # Single Run Button (auto-normalize + generate)
+        self.btn_run = ctk.CTkButton(self.main_frame, text="GENERATE SAP JV", height=50,
                                      font=ctk.CTkFont(size=16, weight="bold"),
                                      fg_color="#285", hover_color="#274",
                                      command=self.start_processing)
-        self.btn_run.grid(row=3, column=0, padx=40, pady=40, sticky="ew")
+        self.btn_run.grid(row=3, column=0, padx=40, pady=(20, 30), sticky="ew")
 
         # Console
         self.textbox = ctk.CTkTextbox(self.main_frame, height=150)
@@ -87,6 +88,7 @@ class App(ctk.CTk):
         filename = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
         if filename:
             self.input_path = filename
+            self.normalized_path = ""
             self.lbl_file.configure(text=os.path.basename(filename), text_color="white")
             self.log(f"Selected: {filename}")
 
@@ -118,9 +120,21 @@ class App(ctk.CTk):
                 "COMPANY_CODE": int(c_code),
                 "API_KEY": a_key
             }
+
+            # Auto-normalize when input is not already a Stage-1 normalized workbook
+            xls = pd.ExcelFile(self.input_path)
+            if "Normalized" in xls.sheet_names:
+                self.normalized_path = self.input_path
+                self.log("Detected normalized input. Skipping Stage 1.")
+            else:
+                self.log("Running Stage 1 normalization automatically...")
+                normalizer = BillingNormalizer(log_callback=self.log)
+                out_path, _ = normalizer.normalize(self.input_path)
+                self.normalized_path = out_path
+                self.log(f"Normalization complete: {os.path.basename(out_path)}")
             
             engine = JVEngine(config)
-            rows = engine.run_processing(self.input_path, log_callback=self.log, api_key=a_key)
+            rows = engine.run_processing(self.normalized_path, log_callback=self.log, api_key=a_key)
             
             self.log("Finalizing Excel file structure...")
             safe_label = m_label.replace("'", "").replace(" ", "_")
