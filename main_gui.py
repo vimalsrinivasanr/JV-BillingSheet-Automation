@@ -127,18 +127,20 @@ class App(ctk.CTk):
             out_name = f"SAP_JV_Upload_{safe_label}.xlsx"
             out_path = os.path.join(os.path.dirname(self.input_path), out_name)
             
-            # (Simplified write for prototype)
-            df_out = pd.DataFrame([r for r in rows if any(r.values())]) # filter blank spacer rows for CSV-like check
-            df_out.to_excel(out_path, index=False)
+            # Use engine's specialized writer
+            engine.write_excel(rows, out_path, log_callback=self.log)
             
             self.log(f"SUCCESS: {out_name} generated.")
-            messagebox.showinfo("Success", f"JV File Generated!\n\nLocation: {out_path}")
+            # Thread-safe UI update
+            self.after(0, lambda: messagebox.showinfo("Success", f"JV File Generated!\n\nLocation: {out_path}"))
             
         except Exception as e:
-            self.log(f"ERROR: {str(e)}")
-            messagebox.showerror("Processing Error", f"Failed to process file: {str(e)}")
+            err_msg = str(e)
+            self.log(f"ERROR: {err_msg}")
+            # Thread-safe UI update
+            self.after(0, lambda: messagebox.showerror("Processing Error", f"Failed to process file:\n{err_msg}"))
         finally:
-            self.btn_run.configure(state="normal")
+            self.after(0, lambda: self.btn_run.configure(state="normal"))
 
 if __name__ == "__main__":
     app = App()

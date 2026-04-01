@@ -23,8 +23,7 @@ class JVEngine:
         self.GL_COL_NAMES = ["gl_742234", "gl_742238", "gl_742235", "gl_742236", "gl_742237", "gl_842028"]
         self.GL_CODES = [742234, 742238, 742235, 742236, 742237, 842028]
 
-    @staticmethod
-    def d2(val):
+    def d2(self, val):
         """Round val to exactly 2 decimal places using Decimal."""
         if val is None or pd.isna(val): return 0.0
         try:
@@ -38,12 +37,11 @@ class JVEngine:
             if idx >= len(raw_data.columns): return pd.Series([0.0]*len(df))
             return pd.to_numeric(raw_data.iloc[:, idx], errors="coerce").fillna(0.0)
 
-        # Derived logic based on user's reference file
         df["billed_status"] = "Billed" 
         df["ic_code"] = raw_data.iloc[:, 80] if len(raw_data.columns) > 80 else "UNKNOWN"
         df["invoice_no"] = raw_data.iloc[:, 82] if len(raw_data.columns) > 82 else ""
-        df["emp_no_ref"] = df["workday_id"] # Formula: =A4
-        df["cap_center_ref"] = df["cap_center"] # Formula: =G4
+        df["emp_no_ref"] = df["workday_id"]
+        df["cap_center_ref"] = df["cap_center"]
 
         # Financial Formulas (Summing A-AQ raw data)
         df["gl_742234"] = s(14) + s(16) + s(19) + s(20) + s(21) + s(22) + s(23)
@@ -55,26 +53,25 @@ class JVEngine:
         return df
 
     def run_processing(self, filepath, log_callback=print, api_key=None):
-        """Full processing pipeline with AI logic mapping."""
+        """Full processing pipeline."""
         log_callback(f"Loading {os.path.basename(filepath)}...")
         raw = pd.read_excel(filepath, sheet_name="Billing sheet", header=None, dtype=str)
         col_names = raw.iloc[2].tolist()
         data = raw.iloc[3:].copy()
         data.columns = col_names
-        data = data.reset_index(drop=True)
+        data = data.reset_index(drop=True).fillna("")
 
         mapping = None
         if api_key:
             from ai_mapper import AIMapper
-            log_callback("Connecting to Gemini AI for intelligent mapping...")
+            log_callback("AI Engine: Analyzing schema with Gemini...")
             mapper = AIMapper(api_key)
             mapping = mapper.analyze_template(data.head(5))
         
         if mapping:
-            log_callback("AI Mapping successful!")
+            log_callback("AI Engine: Logic mapping discovered successfully.")
         else:
-            log_callback("AI mapping skipped or failed. Using robust fallback rules...")
-            # Traditional fallback based on standard indices
+            log_callback("Process Engine: Using robust internal fallback rules.")
             mapping = {
                 "workday_id": 0, "cap_center": 6, "legal_entity": 41, "classification": 42,
                 "billed_status": 79, "ic_code": 80, "invoice_no": 82, "emp_no_ref": 83, "cap_center_ref": 84
@@ -91,31 +88,37 @@ class JVEngine:
         df["emp_no_ref"] = data.iloc[:, mapping["emp_no_ref"]] if "emp_no_ref" in mapping else df["workday_id"]
         df["cap_center_ref"] = data.iloc[:, mapping["cap_center_ref"]] if "cap_center_ref" in mapping else df["cap_center"]
 
-        # Financial Columns (Check if they exist; if not, calculate)
         if len(data.columns) > 85:
-            # Traditional index-based loading
             for i, name in enumerate(self.GL_COL_NAMES):
                 df[name] = pd.to_numeric(data.iloc[:, 85+i], errors="coerce").fillna(0.0)
         else:
-            log_callback("Missing financial columns (CB-CM). Applying auto-calculation formulas...")
+            log_callback("Data Check: Missing extended columns. Calculating from raw A-AQ...")
             df = self.calculate_virtual_columns(data, df)
 
-        log_callback("Cleaning and filtering...")
-        for col in df.columns:
-            df[col] = df[col].astype(str).str.strip()
-        
-        df = df[df["workday_id"].notna() & ~df["workday_id"].isin(["nan", "None", ""])]
+        log_callback("Filtering and reconciling data...")
+        for col in df.columns: df[col] = df[col].astype(str).str.strip()
+        df = df[df["workday_id"] != ""]
         df = df[(df["classification"] == "Billable") & (df["billed_status"] == "Billed")]
-        df = df[df["invoice_no"].notna() & ~df["invoice_no"].isin(["", "nan", "None"])]
         
         for col in self.GL_COL_NAMES:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
             
         df = df.sort_values(by=["invoice_no", "workday_id"]).reset_index(drop=True)
-        
-        log_callback(f"Building JV rows for {len(df)} employees...")
-        rows = self._build_rows(df)
-        return rows
+        return self._build_rows(df)
+
+    def _get_full_row(self):
+        """Returns a dict with all 37 SAP columns initialized to None."""
+        cols = [
+            "Reference", "Document Date", "Document Type", "Company Code", "Posting Date",
+            "Reference.1", "Document Header Text", "Currency", "Exchange rate", "Amount",
+            "Posting Key", "Account", "Special G/L ind.", "Cost Center", "Internal Order",
+            "Profit Center", "Business Area", "Assignment Number (20)", "Item Text (50)",
+            "Ref Key 1", "Ref Key 2", "Ref Key 3 (20)", "Material", "Trading Partner",
+            "Tax Code", "Withholding tax code", "Withholding tax base amount in document currency",
+            "Customer", "Contracts", "Revenue Period", "Core Consultant", "Revenue Month",
+            "Reversal Date", "LEDGER", "WT CODE1", "WT Amount", "Inovice Receipt Date",
+        ]
+        return {c: None for c in cols}
 
     def _build_rows(self, df):
         doc_header = f"Revenue Reclass {self.MONTH_LABEL}"
@@ -129,8 +132,9 @@ class JVEngine:
             debits = []
             for _, emp in inv_df.iterrows():
                 for gl_col, gl_code in zip(self.GL_COL_NAMES, self.GL_CODES):
-                    if abs(emp[gl_col]) < 0.001: continue
-                    debits.append({
+                    if abs(emp[gl_col]) < 0.01: continue
+                    r = self._get_full_row()
+                    r.update({
                         "Reference": 0, "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
                         "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
                         "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
@@ -140,6 +144,7 @@ class JVEngine:
                         "Ref Key 1": ic_code, "Ref Key 2": emp["cap_center_ref"], "Ref Key 3 (20)": emp["emp_no_ref"],
                         "Inovice Receipt Date": self.MONTH_END_DATE
                     })
+                    debits.append(r)
 
             if not debits: continue
             
@@ -150,20 +155,71 @@ class JVEngine:
                 batch = debits[i:i+batch_max]
                 batch_credit = sum(Decimal(str(abs(d["Amount"]))) for d in batch)
                 
-                credit_row = {
-                    "Reference": serial_counter, "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
+                cr = self._get_full_row()
+                cr.update({
+                    "Reference": int(serial_counter), "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
                     "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
                     "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
                     "Amount": self.d2(float(batch_credit)), "Posting Key": self.CREDIT_POSTING_KEY,
-                    "Account": 500003, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
+                    "Account": self.CREDIT_ACCOUNT, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
                     "Assignment Number (20)": inv, "Item Text (50)": doc_header,
                     "Ref Key 1": ic_code, "Inovice Receipt Date": self.MONTH_END_DATE
-                }
-                for d in batch: d["Reference"] = serial_counter
+                })
+                for d in batch: d["Reference"] = int(serial_counter)
                 
-                rows.append(credit_row)
+                rows.append(cr)
                 rows.extend(batch)
-                rows.append({k: None for k in credit_row.keys()}) # spacer
+                rows.append({k: None for k in cr.keys()}) # spacer
                 serial_counter += 1
                 i += batch_max
         return rows
+
+    def write_excel(self, rows, out_path, log_callback=print):
+        """Write final JV rows to Excel in SAP upload column order, including the 2 extra header rows."""
+        SAP_COLUMNS = list(self._get_full_row().keys())
+
+        # Create DataFrame from a list of rows that actually have data OR are intentional spacers
+        df_data = pd.DataFrame(rows)
+        
+        if df_data.empty:
+            raise ValueError("No data rows found to write. Check filters.")
+            
+        df_data.columns = SAP_COLUMNS
+
+        # Row 1 Labels
+        row1 = [
+            "Unique S.No.", self.MONTH_END_DATE, self.DOC_TYPE, self.COMPANY_CODE, self.MONTH_END_DATE,
+            "Invoice No.", f"Revenue Reclass {self.MONTH_LABEL}", None, None, "Amount",
+            "Based on the formula", "GL Codes", None, "Standard", None, "Standard", None,
+            "Invoice No.", f"Revenue Reclass {self.MONTH_LABEL}", "IC Code", "Capablity Center", "EmpNo.",
+            None, None, None, None, None, None, None, None, None, None, None, None, None, None, self.MONTH_END_DATE
+        ]
+        df_h1 = pd.DataFrame([row1], columns=SAP_COLUMNS)
+        df_h2 = pd.DataFrame([[None]*len(SAP_COLUMNS)], columns=SAP_COLUMNS)
+
+        with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
+            df_h1.to_excel(writer, sheet_name="JV", index=False, header=False, startrow=0)
+            df_h2.to_excel(writer, sheet_name="JV", index=False, header=False, startrow=1)
+            df_data.to_excel(writer, sheet_name="JV", index=False, header=True, startrow=2)
+
+        # POST-PROCESS: Openpyxl for precision and formula
+        from openpyxl import load_workbook
+        wb = load_workbook(out_path)
+        ws = wb["JV"]
+
+        amt_col_idx = 10 # Column 'J'
+        last_data_row = 3
+        for row in range(4, ws.max_row + 1):
+            cell = ws.cell(row=row, column=amt_col_idx)
+            val = cell.value
+            if val is not None and val != "":
+                try: cell.value = float(Decimal(str(val)))
+                except: pass
+                last_data_row = row
+
+        # Inject formula at the bottom
+        check_row = ws.max_row + 1 if ws.max_row > 5 else 5
+        ws.cell(row=check_row, column=amt_col_idx).value = f"=ROUND(SUM(J4:J{last_data_row}),2)"
+        
+        wb.save(out_path)
+        log_callback(f"Balance check formula injected at J{check_row}")

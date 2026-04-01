@@ -20,9 +20,23 @@ class AIMapper:
         if not self.model:
             return None # Fallback to hardcoded logic
 
+        # Handle duplicate column names to avoid UserWarning and data loss
+        df_clean = df_sample.copy()
+        new_cols = []
+        counts = {}
+        for col in df_clean.columns:
+            col_str = str(col)
+            if col_str in counts:
+                counts[col_str] += 1
+                new_cols.append(f"{col_str}_{counts[col_str]}")
+            else:
+                counts[col_str] = 0
+                new_cols.append(col_str)
+        df_clean.columns = new_cols
+
         # Prepare the sample data for the prompt
-        headers = df_sample.columns.tolist()
-        sample_data = df_sample.head(3).to_dict(orient='records')
+        headers = df_clean.columns.tolist()
+        sample_data = df_clean.head(3).to_dict(orient='records')
         
         prompt = f"""
         Act as a Financial Data Engineer. I have a billing spreadsheet with these headers: {headers}
@@ -36,13 +50,23 @@ class AIMapper:
         - billed_status (Whether it is 'Billed' or 'Unbilled')
         - invoice_no (The document or invoice number)
         - ic_code (The entity code like NL_RSH, US_SAP_L)
+        - emp_no_ref (Employee reference number)
+        - cap_center_ref (Capability center reference)
         
         Return ONLY a JSON object mapping each field to its 0-indexed column position.
         Example: {{"workday_id": 0, "cap_center": 6, ...}}
         """
         
         try:
-            response = self.model.generate_content(prompt)
+            # Try gemini-1.5-flash-latest
+            try:
+                model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                response = model.generate_content(prompt)
+            except:
+                # Fallback to gemini-pro if flash is not found
+                model = genai.GenerativeModel('gemini-pro')
+                response = model.generate_content(prompt)
+
             # Extracted JSON from response
             text = response.text.strip()
             if "```json" in text:
