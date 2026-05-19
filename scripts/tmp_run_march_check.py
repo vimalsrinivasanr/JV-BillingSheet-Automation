@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 base = '/Users/macbook/Downloads/Library/PROJECTS/Randstad/JV-BillingSheet-Automation'
-inp = os.path.join(base, 'Input Data March.xlsx')
+inp = os.path.join(base, 'input', 'Input Data March.xlsx')
 
 n = BillingNormalizer(log_callback=print)
 normalized_path, report = n.normalize(inp)

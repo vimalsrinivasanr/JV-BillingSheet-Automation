@@ -1,0 +1,3022 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "app.py",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L1",
+      "community": 2,
+      "norm_label": "app.py",
+      "id": "app_py"
+    },
+    {
+      "label": "load_billing_sheet()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L82",
+      "community": 2,
+      "norm_label": "load_billing_sheet()",
+      "id": "jv_billingsheet_automation_app_load_billing_sheet"
+    },
+    {
+      "label": "clean_and_filter()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L123",
+      "community": 2,
+      "norm_label": "clean_and_filter()",
+      "id": "jv_billingsheet_automation_app_clean_and_filter"
+    },
+    {
+      "label": "make_debit_row()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L165",
+      "community": 2,
+      "norm_label": "make_debit_row()",
+      "id": "jv_billingsheet_automation_app_make_debit_row"
+    },
+    {
+      "label": "make_credit_row()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L202",
+      "community": 2,
+      "norm_label": "make_credit_row()",
+      "id": "jv_billingsheet_automation_app_make_credit_row"
+    },
+    {
+      "label": "build_jv_rows()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L235",
+      "community": 2,
+      "norm_label": "build_jv_rows()",
+      "id": "jv_billingsheet_automation_app_build_jv_rows"
+    },
+    {
+      "label": "write_output()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L340",
+      "community": 2,
+      "norm_label": "write_output()",
+      "id": "jv_billingsheet_automation_app_write_output"
+    },
+    {
+      "label": "validate()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L435",
+      "community": 2,
+      "norm_label": "validate()",
+      "id": "jv_billingsheet_automation_app_validate"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L470",
+      "community": 2,
+      "norm_label": "main()",
+      "id": "jv_billingsheet_automation_app_main"
+    },
+    {
+      "label": "App entry point: wires together MVC components.",
+      "file_type": "rationale",
+      "source_file": "app.py",
+      "source_location": "L1",
+      "community": 2,
+      "norm_label": "app entry point: wires together mvc components.",
+      "id": "jv_billingsheet_automation_app_rationale_1"
+    },
+    {
+      "label": "Round val to exactly 2 decimal places using Decimal to eliminate float precision",
+      "file_type": "rationale",
+      "source_file": "app.py",
+      "source_location": "L22",
+      "community": 2,
+      "norm_label": "round val to exactly 2 decimal places using decimal to eliminate float precision",
+      "id": "jv_billingsheet_automation_app_rationale_22"
+    },
+    {
+      "label": "Load billing sheet. Row 0 = GL category, Row 1 = real headers, Row 2+ = data.",
+      "file_type": "rationale",
+      "source_file": "app.py",
+      "source_location": "L83",
+      "community": 2,
+      "norm_label": "load billing sheet. row 0 = gl category, row 1 = real headers, row 2+ = data.",
+      "id": "jv_billingsheet_automation_app_rationale_83"
+    },
+    {
+      "label": "Filter: AQ=Billable AND CB=Billed only. Sort by EmpNo (CF). Each JV must sum to",
+      "file_type": "rationale",
+      "source_file": "app.py",
+      "source_location": "L124",
+      "community": 2,
+      "norm_label": "filter: aq=billable and cb=billed only. sort by empno (cf). each jv must sum to",
+      "id": "jv_billingsheet_automation_app_rationale_124"
+    },
+    {
+      "label": "For each billed employee row:       - Create 6 debit lines (one per GL code), sk",
+      "file_type": "rationale",
+      "source_file": "app.py",
+      "source_location": "L236",
+      "community": 2,
+      "norm_label": "for each billed employee row:       - create 6 debit lines (one per gl code), sk",
+      "id": "jv_billingsheet_automation_app_rationale_236"
+    },
+    {
+      "label": "Basic sanity checks before writing the file.",
+      "file_type": "rationale",
+      "source_file": "app.py",
+      "source_location": "L436",
+      "community": 2,
+      "norm_label": "basic sanity checks before writing the file.",
+      "id": "jv_billingsheet_automation_app_rationale_436"
+    },
+    {
+      "label": "test_folder_permissions.py",
+      "file_type": "code",
+      "source_file": "tests/test_folder_permissions.py",
+      "source_location": "L1",
+      "community": 9,
+      "norm_label": "test_folder_permissions.py",
+      "id": "tests_test_folder_permissions_py"
+    },
+    {
+      "label": "test_input_folder_writable()",
+      "file_type": "code",
+      "source_file": "tests/test_folder_permissions.py",
+      "source_location": "L4",
+      "community": 9,
+      "norm_label": "test_input_folder_writable()",
+      "id": "tests_test_folder_permissions_test_input_folder_writable"
+    },
+    {
+      "label": "test_output_folder_writable()",
+      "file_type": "code",
+      "source_file": "tests/test_folder_permissions.py",
+      "source_location": "L14",
+      "community": 9,
+      "norm_label": "test_output_folder_writable()",
+      "id": "tests_test_folder_permissions_test_output_folder_writable"
+    },
+    {
+      "label": "test_integration_pipeline.py",
+      "file_type": "code",
+      "source_file": "tests/test_integration_pipeline.py",
+      "source_location": "L1",
+      "community": 4,
+      "norm_label": "test_integration_pipeline.py",
+      "id": "tests_test_integration_pipeline_py"
+    },
+    {
+      "label": "test_full_pipeline()",
+      "file_type": "code",
+      "source_file": "tests/test_integration_pipeline.py",
+      "source_location": "L7",
+      "community": 4,
+      "norm_label": "test_full_pipeline()",
+      "id": "tests_test_integration_pipeline_test_full_pipeline"
+    },
+    {
+      "label": "test_app_entry.py",
+      "file_type": "code",
+      "source_file": "tests/test_app_entry.py",
+      "source_location": "L1",
+      "community": 8,
+      "norm_label": "test_app_entry.py",
+      "id": "tests_test_app_entry_py"
+    },
+    {
+      "label": "test_input_folder_exists()",
+      "file_type": "code",
+      "source_file": "tests/test_app_entry.py",
+      "source_location": "L4",
+      "community": 8,
+      "norm_label": "test_input_folder_exists()",
+      "id": "tests_test_app_entry_test_input_folder_exists"
+    },
+    {
+      "label": "test_normalized_folder_exists()",
+      "file_type": "code",
+      "source_file": "tests/test_app_entry.py",
+      "source_location": "L7",
+      "community": 8,
+      "norm_label": "test_normalized_folder_exists()",
+      "id": "tests_test_app_entry_test_normalized_folder_exists"
+    },
+    {
+      "label": "test_scripts_folder_exists()",
+      "file_type": "code",
+      "source_file": "tests/test_app_entry.py",
+      "source_location": "L13",
+      "community": 8,
+      "norm_label": "test_scripts_folder_exists()",
+      "id": "tests_test_app_entry_test_scripts_folder_exists"
+    },
+    {
+      "label": "test_error_handling.py",
+      "file_type": "code",
+      "source_file": "tests/test_error_handling.py",
+      "source_location": "L1",
+      "community": 3,
+      "norm_label": "test_error_handling.py",
+      "id": "tests_test_error_handling_py"
+    },
+    {
+      "label": "test_billing_sheet_invalid_file()",
+      "file_type": "code",
+      "source_file": "tests/test_error_handling.py",
+      "source_location": "L5",
+      "community": 3,
+      "norm_label": "test_billing_sheet_invalid_file()",
+      "id": "tests_test_error_handling_test_billing_sheet_invalid_file"
+    },
+    {
+      "label": "test_jv_generator_with_empty_df()",
+      "file_type": "code",
+      "source_file": "tests/test_error_handling.py",
+      "source_location": "L9",
+      "community": 3,
+      "norm_label": "test_jv_generator_with_empty_df()",
+      "id": "tests_test_error_handling_test_jv_generator_with_empty_df"
+    },
+    {
+      "label": "test_jv_generator.py",
+      "file_type": "code",
+      "source_file": "tests/test_jv_generator.py",
+      "source_location": "L1",
+      "community": 3,
+      "norm_label": "test_jv_generator.py",
+      "id": "tests_test_jv_generator_py"
+    },
+    {
+      "label": "test_generate_jv_stub()",
+      "file_type": "code",
+      "source_file": "tests/test_jv_generator.py",
+      "source_location": "L5",
+      "community": 3,
+      "norm_label": "test_generate_jv_stub()",
+      "id": "tests_test_jv_generator_test_generate_jv_stub"
+    },
+    {
+      "label": "test_billing_sheet.py",
+      "file_type": "code",
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L1",
+      "community": 4,
+      "norm_label": "test_billing_sheet.py",
+      "id": "tests_test_billing_sheet_py"
+    },
+    {
+      "label": "test_load_valid_file()",
+      "file_type": "code",
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L5",
+      "community": 4,
+      "norm_label": "test_load_valid_file()",
+      "id": "tests_test_billing_sheet_test_load_valid_file"
+    },
+    {
+      "label": "test_load_missing_file()",
+      "file_type": "code",
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L13",
+      "community": 4,
+      "norm_label": "test_load_missing_file()",
+      "id": "tests_test_billing_sheet_test_load_missing_file"
+    },
+    {
+      "label": "test_validate_stub()",
+      "file_type": "code",
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L18",
+      "community": 4,
+      "norm_label": "test_validate_stub()",
+      "id": "tests_test_billing_sheet_test_validate_stub"
+    },
+    {
+      "label": "jv_generator.py",
+      "file_type": "code",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L1",
+      "community": 3,
+      "norm_label": "jv_generator.py",
+      "id": "models_jv_generator_py"
+    },
+    {
+      "label": ".generate()",
+      "file_type": "code",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L13",
+      "community": 3,
+      "norm_label": ".generate()",
+      "id": "models_jv_generator_jvgenerator_generate"
+    },
+    {
+      "label": ".save()",
+      "file_type": "code",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L18",
+      "community": 3,
+      "norm_label": ".save()",
+      "id": "models_jv_generator_jvgenerator_save"
+    },
+    {
+      "label": "Model: JVGenerator Handles JV file generation logic from normalized billing data",
+      "file_type": "rationale",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L1",
+      "community": 3,
+      "norm_label": "model: jvgenerator handles jv file generation logic from normalized billing data",
+      "id": "models_jv_generator_rationale_1"
+    },
+    {
+      "label": "# TODO: Implement JV generation logic",
+      "file_type": "rationale",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L14",
+      "community": 3,
+      "norm_label": "# todo: implement jv generation logic",
+      "id": "models_jv_generator_rationale_14"
+    },
+    {
+      "label": "billing_sheet.py",
+      "file_type": "code",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L1",
+      "community": 4,
+      "norm_label": "billing_sheet.py",
+      "id": "models_billing_sheet_py"
+    },
+    {
+      "label": ".load()",
+      "file_type": "code",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L13",
+      "community": 4,
+      "norm_label": ".load()",
+      "id": "models_billing_sheet_billingsheet_load"
+    },
+    {
+      "label": ".apply_business_rules()",
+      "file_type": "code",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L22",
+      "community": 4,
+      "norm_label": ".apply_business_rules()",
+      "id": "models_billing_sheet_billingsheet_apply_business_rules"
+    },
+    {
+      "label": "Model: BillingSheet Handles data normalization, validation, and business rules f",
+      "file_type": "rationale",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L1",
+      "community": 4,
+      "norm_label": "model: billingsheet handles data normalization, validation, and business rules f",
+      "id": "models_billing_sheet_rationale_1"
+    },
+    {
+      "label": "# TODO: Implement loading and normalization logic",
+      "file_type": "rationale",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L14",
+      "community": 4,
+      "norm_label": "# todo: implement loading and normalization logic",
+      "id": "models_billing_sheet_rationale_14"
+    },
+    {
+      "label": "# TODO: Implement validation logic",
+      "file_type": "rationale",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L19",
+      "community": 4,
+      "norm_label": "# todo: implement validation logic",
+      "id": "models_billing_sheet_rationale_19"
+    },
+    {
+      "label": "# TODO: Implement business rules",
+      "file_type": "rationale",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L23",
+      "community": 4,
+      "norm_label": "# todo: implement business rules",
+      "id": "models_billing_sheet_rationale_23"
+    },
+    {
+      "label": "verify_columns_and_generate.py",
+      "file_type": "code",
+      "source_file": "scripts/verify_columns_and_generate.py",
+      "source_location": "L1",
+      "community": 10,
+      "norm_label": "verify_columns_and_generate.py",
+      "id": "scripts_verify_columns_and_generate_py"
+    },
+    {
+      "label": "tmp_run_march_check.py",
+      "file_type": "code",
+      "source_file": "scripts/tmp_run_march_check.py",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "tmp_run_march_check.py",
+      "id": "scripts_tmp_run_march_check_py"
+    },
+    {
+      "label": "diag_check_normalized.py",
+      "file_type": "code",
+      "source_file": "scripts/diag_check_normalized.py",
+      "source_location": "L1",
+      "community": 12,
+      "norm_label": "diag_check_normalized.py",
+      "id": "scripts_diag_check_normalized_py"
+    },
+    {
+      "label": "test_manual_loader.py",
+      "file_type": "code",
+      "source_file": "scripts/test_manual_loader.py",
+      "source_location": "L1",
+      "community": 13,
+      "norm_label": "test_manual_loader.py",
+      "id": "scripts_test_manual_loader_py"
+    },
+    {
+      "label": "check_gl_load.py",
+      "file_type": "code",
+      "source_file": "scripts/check_gl_load.py",
+      "source_location": "L1",
+      "community": 14,
+      "norm_label": "check_gl_load.py",
+      "id": "scripts_check_gl_load_py"
+    },
+    {
+      "label": "list_sheets.py",
+      "file_type": "code",
+      "source_file": "scripts/list_sheets.py",
+      "source_location": "L1",
+      "community": 15,
+      "norm_label": "list_sheets.py",
+      "id": "scripts_list_sheets_py"
+    },
+    {
+      "label": "build_windows.py",
+      "file_type": "code",
+      "source_file": "scripts/build_windows.py",
+      "source_location": "L1",
+      "community": 16,
+      "norm_label": "build_windows.py",
+      "id": "scripts_build_windows_py"
+    },
+    {
+      "label": "engine.py",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L1",
+      "community": 1,
+      "norm_label": "engine.py",
+      "id": "scripts_engine_py"
+    },
+    {
+      "label": "JVEngine",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L6",
+      "community": 1,
+      "norm_label": "jvengine",
+      "id": "scripts_engine_jvengine"
+    },
+    {
+      "label": "._load_normalized_data()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L27",
+      "community": 1,
+      "norm_label": "._load_normalized_data()",
+      "id": "scripts_engine_jvengine_load_normalized_data"
+    },
+    {
+      "label": "._load_legacy_billing_data()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L133",
+      "community": 1,
+      "norm_label": "._load_legacy_billing_data()",
+      "id": "scripts_engine_jvengine_load_legacy_billing_data"
+    },
+    {
+      "label": ".d2()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L166",
+      "community": 2,
+      "norm_label": ".d2()",
+      "id": "scripts_engine_jvengine_d2"
+    },
+    {
+      "label": ".calculate_virtual_columns()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L174",
+      "community": 1,
+      "norm_label": ".calculate_virtual_columns()",
+      "id": "scripts_engine_jvengine_calculate_virtual_columns"
+    },
+    {
+      "label": ".run_processing()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L195",
+      "community": 1,
+      "norm_label": ".run_processing()",
+      "id": "scripts_engine_jvengine_run_processing"
+    },
+    {
+      "label": "._load_manual_sheet()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L243",
+      "community": 1,
+      "norm_label": "._load_manual_sheet()",
+      "id": "scripts_engine_jvengine_load_manual_sheet"
+    },
+    {
+      "label": "._build_filter_check()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L371",
+      "community": 1,
+      "norm_label": "._build_filter_check()",
+      "id": "scripts_engine_jvengine_build_filter_check"
+    },
+    {
+      "label": "._get_full_row()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L394",
+      "community": 1,
+      "norm_label": "._get_full_row()",
+      "id": "scripts_engine_jvengine_get_full_row"
+    },
+    {
+      "label": "._build_rows()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L408",
+      "community": 1,
+      "norm_label": "._build_rows()",
+      "id": "scripts_engine_jvengine_build_rows"
+    },
+    {
+      "label": ".write_excel()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L467",
+      "community": 0,
+      "norm_label": ".write_excel()",
+      "id": "scripts_engine_jvengine_write_excel"
+    },
+    {
+      "label": "Core logic engine to handle data cleaning, formula calculation, and JV generatio",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L7",
+      "community": 1,
+      "norm_label": "core logic engine to handle data cleaning, formula calculation, and jv generatio",
+      "id": "scripts_engine_rationale_7"
+    },
+    {
+      "label": "Load Stage-1 normalized file (sheet: Normalized) and map to engine schema.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L28",
+      "community": 1,
+      "norm_label": "load stage-1 normalized file (sheet: normalized) and map to engine schema.",
+      "id": "scripts_engine_rationale_28"
+    },
+    {
+      "label": "Legacy fallback loader for raw billing sheet with historical index assumptions.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L134",
+      "community": 1,
+      "norm_label": "legacy fallback loader for raw billing sheet with historical index assumptions.",
+      "id": "scripts_engine_rationale_134"
+    },
+    {
+      "label": "Round val to exactly 2 decimal places using Decimal.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L167",
+      "community": 2,
+      "norm_label": "round val to exactly 2 decimal places using decimal.",
+      "id": "scripts_engine_rationale_167"
+    },
+    {
+      "label": "Internal rules engine for missing columns CB-CM.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L175",
+      "community": 1,
+      "norm_label": "internal rules engine for missing columns cb-cm.",
+      "id": "scripts_engine_rationale_175"
+    },
+    {
+      "label": "Full processing pipeline.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L196",
+      "community": 1,
+      "norm_label": "full processing pipeline.",
+      "id": "scripts_engine_rationale_196"
+    },
+    {
+      "label": "Load a user-provided sheet that already contains the filter-check columns.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L244",
+      "community": 1,
+      "norm_label": "load a user-provided sheet that already contains the filter-check columns.",
+      "id": "scripts_engine_rationale_244"
+    },
+    {
+      "label": "Create summary metrics for filter validation.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L372",
+      "community": 1,
+      "norm_label": "create summary metrics for filter validation.",
+      "id": "scripts_engine_rationale_372"
+    },
+    {
+      "label": "Returns a dict with all 37 SAP columns initialized to None.",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L395",
+      "community": 1,
+      "norm_label": "returns a dict with all 37 sap columns initialized to none.",
+      "id": "scripts_engine_rationale_395"
+    },
+    {
+      "label": "Write final JV rows to Excel in SAP upload column order, including the 2 extra h",
+      "file_type": "rationale",
+      "source_file": "scripts/engine.py",
+      "source_location": "L468",
+      "community": 2,
+      "norm_label": "write final jv rows to excel in sap upload column order, including the 2 extra h",
+      "id": "scripts_engine_rationale_468"
+    },
+    {
+      "label": "list_columns.py",
+      "file_type": "code",
+      "source_file": "scripts/list_columns.py",
+      "source_location": "L1",
+      "community": 17,
+      "norm_label": "list_columns.py",
+      "id": "scripts_list_columns_py"
+    },
+    {
+      "label": "main_gui.py",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L1",
+      "community": 5,
+      "norm_label": "main_gui.py",
+      "id": "scripts_main_gui_py"
+    },
+    {
+      "label": "App",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L12",
+      "community": 5,
+      "norm_label": "app",
+      "id": "scripts_main_gui_app"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L13",
+      "community": 5,
+      "norm_label": ".__init__()",
+      "id": "scripts_main_gui_app_init"
+    },
+    {
+      "label": ".add_sidebar_entry()",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L78",
+      "community": 5,
+      "norm_label": ".add_sidebar_entry()",
+      "id": "scripts_main_gui_app_add_sidebar_entry"
+    },
+    {
+      "label": ".browse_file()",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L86",
+      "community": 5,
+      "norm_label": ".browse_file()",
+      "id": "scripts_main_gui_app_browse_file"
+    },
+    {
+      "label": ".log()",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L94",
+      "community": 5,
+      "norm_label": ".log()",
+      "id": "scripts_main_gui_app_log"
+    },
+    {
+      "label": ".save_config()",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L98",
+      "community": 5,
+      "norm_label": ".save_config()",
+      "id": "scripts_main_gui_app_save_config"
+    },
+    {
+      "label": ".start_processing()",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L101",
+      "community": 5,
+      "norm_label": ".start_processing()",
+      "id": "scripts_main_gui_app_start_processing"
+    },
+    {
+      "label": ".run_engine()",
+      "file_type": "code",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L109",
+      "community": 5,
+      "norm_label": ".run_engine()",
+      "id": "scripts_main_gui_app_run_engine"
+    },
+    {
+      "label": "test_map_raw_to_gl.py",
+      "file_type": "code",
+      "source_file": "scripts/test_map_raw_to_gl.py",
+      "source_location": "L1",
+      "community": 1,
+      "norm_label": "test_map_raw_to_gl.py",
+      "id": "scripts_test_map_raw_to_gl_py"
+    },
+    {
+      "label": "pick_raw()",
+      "file_type": "code",
+      "source_file": "scripts/test_map_raw_to_gl.py",
+      "source_location": "L12",
+      "community": 1,
+      "norm_label": "pick_raw()",
+      "id": "scripts_test_map_raw_to_gl_pick_raw"
+    },
+    {
+      "label": "preview_norm.py",
+      "file_type": "code",
+      "source_file": "scripts/preview_norm.py",
+      "source_location": "L1",
+      "community": 18,
+      "norm_label": "preview_norm.py",
+      "id": "scripts_preview_norm_py"
+    },
+    {
+      "label": "inspect_raw_recharge.py",
+      "file_type": "code",
+      "source_file": "scripts/inspect_raw_recharge.py",
+      "source_location": "L1",
+      "community": 19,
+      "norm_label": "inspect_raw_recharge.py",
+      "id": "scripts_inspect_raw_recharge_py"
+    },
+    {
+      "label": "list_raw_cols.py",
+      "file_type": "code",
+      "source_file": "scripts/list_raw_cols.py",
+      "source_location": "L1",
+      "community": 20,
+      "norm_label": "list_raw_cols.py",
+      "id": "scripts_list_raw_cols_py"
+    },
+    {
+      "label": "normalizer.py",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L1",
+      "community": 0,
+      "norm_label": "normalizer.py",
+      "id": "scripts_normalizer_py"
+    },
+    {
+      "label": "BillingNormalizer",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L131",
+      "community": 0,
+      "norm_label": "billingnormalizer",
+      "id": "scripts_normalizer_billingnormalizer"
+    },
+    {
+      "label": "._detect_header_row()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L226",
+      "community": 0,
+      "norm_label": "._detect_header_row()",
+      "id": "scripts_normalizer_billingnormalizer_detect_header_row"
+    },
+    {
+      "label": "._build_col_map()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L242",
+      "community": 0,
+      "norm_label": "._build_col_map()",
+      "id": "scripts_normalizer_billingnormalizer_build_col_map"
+    },
+    {
+      "label": "._fingerprint_columns()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L297",
+      "community": 0,
+      "norm_label": "._fingerprint_columns()",
+      "id": "scripts_normalizer_billingnormalizer_fingerprint_columns"
+    },
+    {
+      "label": "._assemble()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L319",
+      "community": 0,
+      "norm_label": "._assemble()",
+      "id": "scripts_normalizer_billingnormalizer_assemble"
+    },
+    {
+      "label": "._synthesise()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L339",
+      "community": 0,
+      "norm_label": "._synthesise()",
+      "id": "scripts_normalizer_billingnormalizer_synthesise"
+    },
+    {
+      "label": "._calculate_gl()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L393",
+      "community": 0,
+      "norm_label": "._calculate_gl()",
+      "id": "scripts_normalizer_billingnormalizer_calculate_gl"
+    },
+    {
+      "label": "._col_series()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L426",
+      "community": 0,
+      "norm_label": "._col_series()",
+      "id": "scripts_normalizer_billingnormalizer_col_series"
+    },
+    {
+      "label": "_autofit()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L504",
+      "community": 0,
+      "norm_label": "_autofit()",
+      "id": "scripts_normalizer_autofit"
+    },
+    {
+      "label": "normalizer.py  \u2013  Stage 1: Data Normalizer =====================================",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L1",
+      "community": 0,
+      "norm_label": "normalizer.py  \u2013  stage 1: data normalizer =====================================",
+      "id": "scripts_normalizer_rationale_1"
+    },
+    {
+      "label": "Converts any monthly billing sheet to the February Golden Template format.     E",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L132",
+      "community": 0,
+      "norm_label": "converts any monthly billing sheet to the february golden template format.     e",
+      "id": "scripts_normalizer_rationale_132"
+    },
+    {
+      "label": "Main entry point.         Returns (output_path, report_list).",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L144",
+      "community": 0,
+      "norm_label": "main entry point.         returns (output_path, report_list).",
+      "id": "scripts_normalizer_rationale_144"
+    },
+    {
+      "label": "Scan up to row 20 for a row that contains at least 2 of the anchor         token",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L227",
+      "community": 0,
+      "norm_label": "scan up to row 20 for a row that contains at least 2 of the anchor         token",
+      "id": "scripts_normalizer_rationale_227"
+    },
+    {
+      "label": "For each GOLDEN_SCHEMA column return the matching source column name         (st",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L243",
+      "community": 0,
+      "norm_label": "for each golden_schema column return the matching source column name         (st",
+      "id": "scripts_normalizer_rationale_243"
+    },
+    {
+      "label": "For each source column, sample up to 50 non-null values and match         agains",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L298",
+      "community": 0,
+      "norm_label": "for each source column, sample up to 50 non-null values and match         agains",
+      "id": "scripts_normalizer_rationale_298"
+    },
+    {
+      "label": "Build DataFrame in February column order.",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L320",
+      "community": 0,
+      "norm_label": "build dataframe in february column order.",
+      "id": "scripts_normalizer_rationale_320"
+    },
+    {
+      "label": "Compute the formula-derived columns (equivalent to Feb CB\u2013CM).         Uses name",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L394",
+      "community": 0,
+      "norm_label": "compute the formula-derived columns (equivalent to feb cb\u2013cm).         uses name",
+      "id": "scripts_normalizer_rationale_394"
+    },
+    {
+      "label": "Return a single Series even when duplicate header names exist.",
+      "file_type": "rationale",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L427",
+      "community": 0,
+      "norm_label": "return a single series even when duplicate header names exist.",
+      "id": "scripts_normalizer_rationale_427"
+    },
+    {
+      "label": "ai_mapper.py",
+      "file_type": "code",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L1",
+      "community": 7,
+      "norm_label": "ai_mapper.py",
+      "id": "scripts_ai_mapper_py"
+    },
+    {
+      "label": "AIMapper",
+      "file_type": "code",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L5",
+      "community": 7,
+      "norm_label": "aimapper",
+      "id": "scripts_ai_mapper_aimapper"
+    },
+    {
+      "label": ".analyze_template()",
+      "file_type": "code",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L15",
+      "community": 7,
+      "norm_label": ".analyze_template()",
+      "id": "scripts_ai_mapper_aimapper_analyze_template"
+    },
+    {
+      "label": "Uses Gemini to intelligently map raw spreadsheet columns to target business fiel",
+      "file_type": "rationale",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L6",
+      "community": 7,
+      "norm_label": "uses gemini to intelligently map raw spreadsheet columns to target business fiel",
+      "id": "scripts_ai_mapper_rationale_6"
+    },
+    {
+      "label": "Analyzes the first 5 rows of a spreadsheet to determine column mappings.",
+      "file_type": "rationale",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L16",
+      "community": 7,
+      "norm_label": "analyzes the first 5 rows of a spreadsheet to determine column mappings.",
+      "id": "scripts_ai_mapper_rationale_16"
+    },
+    {
+      "label": "print_jv_amounts.py",
+      "file_type": "code",
+      "source_file": "scripts/print_jv_amounts.py",
+      "source_location": "L1",
+      "community": 21,
+      "norm_label": "print_jv_amounts.py",
+      "id": "scripts_print_jv_amounts_py"
+    },
+    {
+      "label": "run_engine_cli.py",
+      "file_type": "code",
+      "source_file": "scripts/run_engine_cli.py",
+      "source_location": "L1",
+      "community": 22,
+      "norm_label": "run_engine_cli.py",
+      "id": "scripts_run_engine_cli_py"
+    },
+    {
+      "label": "main_controller.py",
+      "file_type": "code",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L1",
+      "community": 3,
+      "norm_label": "main_controller.py",
+      "id": "controllers_main_controller_py"
+    },
+    {
+      "label": ".generate_jv()",
+      "file_type": "code",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L20",
+      "community": 3,
+      "norm_label": ".generate_jv()",
+      "id": "controllers_main_controller_maincontroller_generate_jv"
+    },
+    {
+      "label": "Controller: MainController Coordinates between the View and Model.",
+      "file_type": "rationale",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L1",
+      "community": 3,
+      "norm_label": "controller: maincontroller coordinates between the view and model.",
+      "id": "controllers_main_controller_rationale_1"
+    },
+    {
+      "label": "# TODO: Save or display JV output",
+      "file_type": "rationale",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L24",
+      "community": 3,
+      "norm_label": "# todo: save or display jv output",
+      "id": "controllers_main_controller_rationale_24"
+    },
+    {
+      "label": "main_view.py",
+      "file_type": "code",
+      "source_file": "views/main_view.py",
+      "source_location": "L1",
+      "community": 6,
+      "norm_label": "main_view.py",
+      "id": "views_main_view_py"
+    },
+    {
+      "label": "MainView",
+      "file_type": "code",
+      "source_file": "views/main_view.py",
+      "source_location": "L8",
+      "community": 6,
+      "norm_label": "mainview",
+      "id": "views_main_view_mainview"
+    },
+    {
+      "label": ".update_view()",
+      "file_type": "code",
+      "source_file": "views/main_view.py",
+      "source_location": "L15",
+      "community": 6,
+      "norm_label": ".update_view()",
+      "id": "views_main_view_mainview_update_view"
+    },
+    {
+      "label": "View: MainView Handles the CustomTkinter UI logic.",
+      "file_type": "rationale",
+      "source_file": "views/main_view.py",
+      "source_location": "L1",
+      "community": 6,
+      "norm_label": "view: mainview handles the customtkinter ui logic.",
+      "id": "views_main_view_rationale_1"
+    },
+    {
+      "label": "# TODO: Build UI components and bind events to controller",
+      "file_type": "rationale",
+      "source_file": "views/main_view.py",
+      "source_location": "L13",
+      "community": 6,
+      "norm_label": "# todo: build ui components and bind events to controller",
+      "id": "views_main_view_rationale_13"
+    },
+    {
+      "label": "# TODO: Update UI with new data",
+      "file_type": "rationale",
+      "source_file": "views/main_view.py",
+      "source_location": "L16",
+      "community": 6,
+      "norm_label": "# todo: update ui with new data",
+      "id": "views_main_view_rationale_16"
+    },
+    {
+      "label": "d2()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L21",
+      "id": "jv_billingsheet_automation_app_d2",
+      "community": 2,
+      "norm_label": "d2()"
+    },
+    {
+      "label": "Write final JV rows to Excel in SAP upload column order, including the 2 extra h",
+      "file_type": "rationale",
+      "source_file": "app.py",
+      "source_location": "L341",
+      "id": "jv_billingsheet_automation_app_rationale_341",
+      "community": 2,
+      "norm_label": "write final jv rows to excel in sap upload column order, including the 2 extra h"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L9",
+      "id": "models_jv_generator_jvgenerator_init",
+      "community": 3,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L9",
+      "id": "models_billing_sheet_billingsheet_init",
+      "community": 4,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".validate()",
+      "file_type": "code",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L18",
+      "id": "models_billing_sheet_billingsheet_validate",
+      "community": 4,
+      "norm_label": ".validate()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "scripts/engine.py",
+      "source_location": "L9",
+      "id": "scripts_engine_jvengine_init",
+      "community": 1,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L137",
+      "id": "scripts_normalizer_billingnormalizer_init",
+      "community": 0,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": "._write_excel()",
+      "file_type": "code",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L436",
+      "id": "scripts_normalizer_billingnormalizer_write_excel",
+      "community": 0,
+      "norm_label": "._write_excel()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L8",
+      "id": "scripts_ai_mapper_aimapper_init",
+      "community": 7,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L10",
+      "id": "controllers_main_controller_maincontroller_init",
+      "community": 3,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".load_billing_sheet()",
+      "file_type": "code",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L15",
+      "id": "controllers_main_controller_maincontroller_load_billing_sheet",
+      "community": 3,
+      "norm_label": ".load_billing_sheet()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "views/main_view.py",
+      "source_location": "L9",
+      "id": "views_main_view_mainview_init",
+      "community": 6,
+      "norm_label": ".__init__()"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "scripts_engine_jvengine_d2"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_load_billing_sheet"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_clean_and_filter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L165",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_make_debit_row"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L202",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_make_credit_row"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L235",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_build_jv_rows"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L340",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_write_output"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L435",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_validate"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L470",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_main"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_1",
+      "target": "app_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "app_py",
+      "target": "jv_billingsheet_automation_app_d2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L488",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_main",
+      "target": "jv_billingsheet_automation_app_load_billing_sheet"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_83",
+      "target": "jv_billingsheet_automation_app_load_billing_sheet"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "controllers_main_controller_py",
+      "target": "jv_billingsheet_automation_app_load_billing_sheet"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "jv_billingsheet_automation_app_load_billing_sheet",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L491",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_main",
+      "target": "jv_billingsheet_automation_app_clean_and_filter"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L124",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_124",
+      "target": "jv_billingsheet_automation_app_clean_and_filter"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L179",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_make_debit_row",
+      "target": "scripts_engine_jvengine_d2"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "jv_billingsheet_automation_app_make_debit_row",
+      "target": "jv_billingsheet_automation_app_d2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L213",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_make_credit_row",
+      "target": "scripts_engine_jvengine_d2"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L321",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_build_jv_rows",
+      "target": "jv_billingsheet_automation_app_make_credit_row"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L213",
+      "weight": 1.0,
+      "source": "jv_billingsheet_automation_app_make_credit_row",
+      "target": "jv_billingsheet_automation_app_d2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L494",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_main",
+      "target": "jv_billingsheet_automation_app_build_jv_rows"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L236",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_236",
+      "target": "jv_billingsheet_automation_app_build_jv_rows"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L502",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_main",
+      "target": "jv_billingsheet_automation_app_write_output"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L341",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_468",
+      "target": "jv_billingsheet_automation_app_write_output"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L341",
+      "weight": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_341",
+      "target": "jv_billingsheet_automation_app_write_output",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L497",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_main",
+      "target": "jv_billingsheet_automation_app_validate"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L436",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_436",
+      "target": "jv_billingsheet_automation_app_validate"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_py",
+      "target": "jv_billingsheet_automation_app_validate"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_22",
+      "target": "scripts_engine_jvengine_d2"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "jv_billingsheet_automation_app_rationale_22",
+      "target": "jv_billingsheet_automation_app_d2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_folder_permissions.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_folder_permissions_py",
+      "target": "tests_test_folder_permissions_test_input_folder_writable"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_folder_permissions.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_folder_permissions_py",
+      "target": "tests_test_folder_permissions_test_output_folder_writable"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_integration_pipeline.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_integration_pipeline_py",
+      "target": "tests_test_integration_pipeline_test_full_pipeline"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_integration_pipeline.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "tests_test_integration_pipeline_test_full_pipeline",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_integration_pipeline.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "tests_test_integration_pipeline_test_full_pipeline",
+      "target": "models_jv_generator_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_app_entry.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_app_entry_py",
+      "target": "tests_test_app_entry_test_input_folder_exists"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_app_entry.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_app_entry_py",
+      "target": "tests_test_app_entry_test_normalized_folder_exists"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_app_entry.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_app_entry_py",
+      "target": "tests_test_app_entry_test_scripts_folder_exists"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_error_handling.py",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_error_handling_py",
+      "target": "tests_test_error_handling_test_billing_sheet_invalid_file"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_error_handling.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_error_handling_py",
+      "target": "tests_test_error_handling_test_jv_generator_with_empty_df"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_error_handling.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "tests_test_error_handling_test_billing_sheet_invalid_file",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_error_handling.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "tests_test_error_handling_test_jv_generator_with_empty_df",
+      "target": "models_jv_generator_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_jv_generator.py",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_jv_generator_py",
+      "target": "tests_test_jv_generator_test_generate_jv_stub"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_jv_generator.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "tests_test_jv_generator_test_generate_jv_stub",
+      "target": "models_jv_generator_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_billing_sheet_py",
+      "target": "tests_test_billing_sheet_test_load_valid_file"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_billing_sheet_py",
+      "target": "tests_test_billing_sheet_test_load_missing_file"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_billing_sheet_py",
+      "target": "tests_test_billing_sheet_test_validate_stub"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_test_billing_sheet_test_load_valid_file",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "tests_test_billing_sheet_test_load_missing_file",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_billing_sheet.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "tests_test_billing_sheet_test_validate_stub",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_jv_generator_py",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_jv_generator_py",
+      "target": "models_jv_generator_jvgenerator_generate"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_jv_generator_py",
+      "target": "models_jv_generator_jvgenerator_save"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_jv_generator_rationale_1",
+      "target": "models_jv_generator_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_jv_generator_rationale_14",
+      "target": "models_jv_generator_py"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "controllers_main_controller_py",
+      "target": "models_jv_generator_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "controllers_main_controller_maincontroller_generate_jv",
+      "target": "models_jv_generator_py"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/jv_generator.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "models_jv_generator_py",
+      "target": "models_jv_generator_jvgenerator_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_py",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_py",
+      "target": "models_billing_sheet_billingsheet_load"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_py",
+      "target": "models_billing_sheet_billingsheet_apply_business_rules"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_rationale_1",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_rationale_14",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_rationale_19",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_billing_sheet_rationale_23",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "controllers_main_controller_py",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "models_billing_sheet_py",
+      "target": "models_billing_sheet_billingsheet_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "models/billing_sheet.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "models_billing_sheet_py",
+      "target": "models_billing_sheet_billingsheet_validate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "controllers_main_controller_maincontroller_load_billing_sheet",
+      "target": "models_billing_sheet_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_py",
+      "target": "scripts_engine_jvengine"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_load_normalized_data"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_load_legacy_billing_data"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L166",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_d2"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L174",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_calculate_virtual_columns"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L195",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_run_processing"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L243",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_load_manual_sheet"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L371",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_build_filter_check"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L394",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_get_full_row"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L408",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_build_rows"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L467",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_write_excel"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_7",
+      "target": "scripts_engine_jvengine"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_engine_jvengine"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "scripts_main_gui_app_run_engine",
+      "target": "scripts_engine_jvengine"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "scripts_engine_jvengine",
+      "target": "scripts_engine_jvengine_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L201",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_run_processing",
+      "target": "scripts_engine_jvengine_load_normalized_data"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_28",
+      "target": "scripts_engine_jvengine_load_normalized_data"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "scripts/engine.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "source": "scripts_engine_jvengine_load_normalized_data",
+      "target": "scripts_test_map_raw_to_gl_pick_raw"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L162",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_load_legacy_billing_data",
+      "target": "scripts_engine_jvengine_calculate_virtual_columns"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L204",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_run_processing",
+      "target": "scripts_engine_jvengine_load_legacy_billing_data"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L134",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_134",
+      "target": "scripts_engine_jvengine_load_legacy_billing_data"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L431",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_build_rows",
+      "target": "scripts_engine_jvengine_d2"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L167",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_167",
+      "target": "scripts_engine_jvengine_d2"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L175",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_175",
+      "target": "scripts_engine_jvengine_calculate_virtual_columns"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L210",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_run_processing",
+      "target": "scripts_engine_jvengine_load_manual_sheet"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L230",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_run_processing",
+      "target": "scripts_engine_jvengine_build_filter_check"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L241",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_run_processing",
+      "target": "scripts_engine_jvengine_build_rows"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L196",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_196",
+      "target": "scripts_engine_jvengine_run_processing"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L244",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_244",
+      "target": "scripts_engine_jvengine_load_manual_sheet"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L372",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_372",
+      "target": "scripts_engine_jvengine_build_filter_check"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L421",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_build_rows",
+      "target": "scripts_engine_jvengine_get_full_row"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L469",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_write_excel",
+      "target": "scripts_engine_jvengine_get_full_row"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L395",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_395",
+      "target": "scripts_engine_jvengine_get_full_row"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/engine.py",
+      "source_location": "L468",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_rationale_468",
+      "target": "scripts_engine_jvengine_write_excel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L436",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_engine_jvengine_write_excel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L207",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_engine_jvengine_write_excel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L483",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_engine_jvengine_write_excel",
+      "target": "scripts_normalizer_autofit"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_py",
+      "target": "scripts_main_gui_app"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L78",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_main_gui_app_add_sidebar_entry"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L86",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_main_gui_app_browse_file"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L94",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_main_gui_app_log"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L98",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_main_gui_app_save_config"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_main_gui_app_start_processing"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_main_gui_app_run_engine"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "confidence_score": 0.5,
+      "source": "scripts_main_gui_app",
+      "target": "scripts_normalizer_billingnormalizer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app_init",
+      "target": "scripts_main_gui_app_add_sidebar_entry"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_ai_mapper_aimapper",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "controllers_main_controller_py",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "views/main_view.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "views_main_view_mainview",
+      "target": "scripts_main_gui_app_init"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L92",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app_browse_file",
+      "target": "scripts_main_gui_app_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L124",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_main_gui_app_run_engine",
+      "target": "scripts_main_gui_app_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "scripts/main_gui.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "scripts_main_gui_app_run_engine",
+      "target": "scripts_normalizer_billingnormalizer"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/test_map_raw_to_gl.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_test_map_raw_to_gl_py",
+      "target": "scripts_test_map_raw_to_gl_pick_raw"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L143",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L504",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_normalizer_autofit"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L176",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_normalizer_billingnormalizer_detect_header_row"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L184",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_normalizer_billingnormalizer_build_col_map"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L187",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_normalizer_billingnormalizer_assemble"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L190",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_normalizer_billingnormalizer_synthesise"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L193",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_normalizer_billingnormalizer_calculate_gl"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_1",
+      "target": "scripts_normalizer_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L144",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_144",
+      "target": "scripts_normalizer_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L207",
+      "weight": 1.0,
+      "source": "scripts_normalizer_py",
+      "target": "scripts_normalizer_billingnormalizer_write_excel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L226",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_detect_header_row"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L242",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_build_col_map"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L297",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_fingerprint_columns"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L319",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_assemble"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L339",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_synthesise"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L393",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_calculate_gl"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L426",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_col_series"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_132",
+      "target": "scripts_normalizer_billingnormalizer"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L436",
+      "weight": 1.0,
+      "source": "scripts_normalizer_billingnormalizer",
+      "target": "scripts_normalizer_billingnormalizer_write_excel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L227",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_227",
+      "target": "scripts_normalizer_billingnormalizer_detect_header_row"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L256",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer_build_col_map",
+      "target": "scripts_normalizer_billingnormalizer_fingerprint_columns"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L243",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_243",
+      "target": "scripts_normalizer_billingnormalizer_build_col_map"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L306",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer_fingerprint_columns",
+      "target": "scripts_normalizer_billingnormalizer_col_series"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L298",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_298",
+      "target": "scripts_normalizer_billingnormalizer_fingerprint_columns"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L325",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_billingnormalizer_assemble",
+      "target": "scripts_normalizer_billingnormalizer_col_series"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L320",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_320",
+      "target": "scripts_normalizer_billingnormalizer_assemble"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L394",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_394",
+      "target": "scripts_normalizer_billingnormalizer_calculate_gl"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L427",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_normalizer_rationale_427",
+      "target": "scripts_normalizer_billingnormalizer_col_series"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/normalizer.py",
+      "source_location": "L483",
+      "weight": 1.0,
+      "source": "scripts_normalizer_billingnormalizer_write_excel",
+      "target": "scripts_normalizer_autofit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_ai_mapper_py",
+      "target": "scripts_ai_mapper_aimapper"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_ai_mapper_aimapper",
+      "target": "scripts_ai_mapper_aimapper_analyze_template"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_ai_mapper_rationale_6",
+      "target": "scripts_ai_mapper_aimapper"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "scripts_ai_mapper_aimapper",
+      "target": "scripts_ai_mapper_aimapper_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/ai_mapper.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "scripts_ai_mapper_rationale_16",
+      "target": "scripts_ai_mapper_aimapper_analyze_template"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "controllers_main_controller_py",
+      "target": "controllers_main_controller_maincontroller_generate_jv"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "controllers_main_controller_rationale_1",
+      "target": "controllers_main_controller_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "controllers_main_controller_rationale_24",
+      "target": "controllers_main_controller_py"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "controllers_main_controller_py",
+      "target": "controllers_main_controller_maincontroller_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "controllers/main_controller.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "controllers_main_controller_py",
+      "target": "controllers_main_controller_maincontroller_load_billing_sheet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "views/main_view.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "views_main_view_py",
+      "target": "views_main_view_mainview"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "views/main_view.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "views_main_view_rationale_1",
+      "target": "views_main_view_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "views/main_view.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "views_main_view_rationale_13",
+      "target": "views_main_view_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "views/main_view.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "views_main_view_rationale_16",
+      "target": "views_main_view_py"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "views/main_view.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "views_main_view_mainview",
+      "target": "views_main_view_mainview_update_view"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "views/main_view.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "views_main_view_mainview",
+      "target": "views_main_view_mainview_init",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "9b38f52ae5b92ebd1cc79b9ff3b29f87fab5f041"
+}

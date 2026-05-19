@@ -1,0 +1,303 @@
+{
+  "communities": {
+    "0": [
+      "scripts_engine_jvengine_write_excel",
+      "scripts_normalizer_autofit",
+      "scripts_normalizer_billingnormalizer",
+      "scripts_normalizer_billingnormalizer_assemble",
+      "scripts_normalizer_billingnormalizer_build_col_map",
+      "scripts_normalizer_billingnormalizer_calculate_gl",
+      "scripts_normalizer_billingnormalizer_col_series",
+      "scripts_normalizer_billingnormalizer_detect_header_row",
+      "scripts_normalizer_billingnormalizer_fingerprint_columns",
+      "scripts_normalizer_billingnormalizer_init",
+      "scripts_normalizer_billingnormalizer_synthesise",
+      "scripts_normalizer_billingnormalizer_write_excel",
+      "scripts_normalizer_py",
+      "scripts_normalizer_rationale_1",
+      "scripts_normalizer_rationale_132",
+      "scripts_normalizer_rationale_144",
+      "scripts_normalizer_rationale_227",
+      "scripts_normalizer_rationale_243",
+      "scripts_normalizer_rationale_298",
+      "scripts_normalizer_rationale_320",
+      "scripts_normalizer_rationale_394",
+      "scripts_normalizer_rationale_427"
+    ],
+    "1": [
+      "scripts_engine_jvengine",
+      "scripts_engine_jvengine_build_filter_check",
+      "scripts_engine_jvengine_build_rows",
+      "scripts_engine_jvengine_calculate_virtual_columns",
+      "scripts_engine_jvengine_get_full_row",
+      "scripts_engine_jvengine_init",
+      "scripts_engine_jvengine_load_legacy_billing_data",
+      "scripts_engine_jvengine_load_manual_sheet",
+      "scripts_engine_jvengine_load_normalized_data",
+      "scripts_engine_jvengine_run_processing",
+      "scripts_engine_py",
+      "scripts_engine_rationale_134",
+      "scripts_engine_rationale_175",
+      "scripts_engine_rationale_196",
+      "scripts_engine_rationale_244",
+      "scripts_engine_rationale_28",
+      "scripts_engine_rationale_372",
+      "scripts_engine_rationale_395",
+      "scripts_engine_rationale_7",
+      "scripts_test_map_raw_to_gl_pick_raw",
+      "scripts_test_map_raw_to_gl_py"
+    ],
+    "2": [
+      "app_py",
+      "jv_billingsheet_automation_app_build_jv_rows",
+      "jv_billingsheet_automation_app_clean_and_filter",
+      "jv_billingsheet_automation_app_d2",
+      "jv_billingsheet_automation_app_load_billing_sheet",
+      "jv_billingsheet_automation_app_main",
+      "jv_billingsheet_automation_app_make_credit_row",
+      "jv_billingsheet_automation_app_make_debit_row",
+      "jv_billingsheet_automation_app_rationale_1",
+      "jv_billingsheet_automation_app_rationale_124",
+      "jv_billingsheet_automation_app_rationale_22",
+      "jv_billingsheet_automation_app_rationale_236",
+      "jv_billingsheet_automation_app_rationale_341",
+      "jv_billingsheet_automation_app_rationale_436",
+      "jv_billingsheet_automation_app_rationale_83",
+      "jv_billingsheet_automation_app_validate",
+      "jv_billingsheet_automation_app_write_output",
+      "scripts_engine_jvengine_d2",
+      "scripts_engine_rationale_167",
+      "scripts_engine_rationale_468"
+    ],
+    "3": [
+      "controllers_main_controller_maincontroller_generate_jv",
+      "controllers_main_controller_maincontroller_init",
+      "controllers_main_controller_maincontroller_load_billing_sheet",
+      "controllers_main_controller_py",
+      "controllers_main_controller_rationale_1",
+      "controllers_main_controller_rationale_24",
+      "models_jv_generator_jvgenerator_generate",
+      "models_jv_generator_jvgenerator_init",
+      "models_jv_generator_jvgenerator_save",
+      "models_jv_generator_py",
+      "models_jv_generator_rationale_1",
+      "models_jv_generator_rationale_14",
+      "tests_test_error_handling_py",
+      "tests_test_error_handling_test_billing_sheet_invalid_file",
+      "tests_test_error_handling_test_jv_generator_with_empty_df",
+      "tests_test_jv_generator_py",
+      "tests_test_jv_generator_test_generate_jv_stub"
+    ],
+    "4": [
+      "models_billing_sheet_billingsheet_apply_business_rules",
+      "models_billing_sheet_billingsheet_init",
+      "models_billing_sheet_billingsheet_load",
+      "models_billing_sheet_billingsheet_validate",
+      "models_billing_sheet_py",
+      "models_billing_sheet_rationale_1",
+      "models_billing_sheet_rationale_14",
+      "models_billing_sheet_rationale_19",
+      "models_billing_sheet_rationale_23",
+      "tests_test_billing_sheet_py",
+      "tests_test_billing_sheet_test_load_missing_file",
+      "tests_test_billing_sheet_test_load_valid_file",
+      "tests_test_billing_sheet_test_validate_stub",
+      "tests_test_integration_pipeline_py",
+      "tests_test_integration_pipeline_test_full_pipeline"
+    ],
+    "5": [
+      "scripts_main_gui_app",
+      "scripts_main_gui_app_add_sidebar_entry",
+      "scripts_main_gui_app_browse_file",
+      "scripts_main_gui_app_init",
+      "scripts_main_gui_app_log",
+      "scripts_main_gui_app_run_engine",
+      "scripts_main_gui_app_save_config",
+      "scripts_main_gui_app_start_processing",
+      "scripts_main_gui_py"
+    ],
+    "6": [
+      "views_main_view_mainview",
+      "views_main_view_mainview_init",
+      "views_main_view_mainview_update_view",
+      "views_main_view_py",
+      "views_main_view_rationale_1",
+      "views_main_view_rationale_13",
+      "views_main_view_rationale_16"
+    ],
+    "7": [
+      "scripts_ai_mapper_aimapper",
+      "scripts_ai_mapper_aimapper_analyze_template",
+      "scripts_ai_mapper_aimapper_init",
+      "scripts_ai_mapper_py",
+      "scripts_ai_mapper_rationale_16",
+      "scripts_ai_mapper_rationale_6"
+    ],
+    "8": [
+      "tests_test_app_entry_py",
+      "tests_test_app_entry_test_input_folder_exists",
+      "tests_test_app_entry_test_normalized_folder_exists",
+      "tests_test_app_entry_test_scripts_folder_exists"
+    ],
+    "9": [
+      "tests_test_folder_permissions_py",
+      "tests_test_folder_permissions_test_input_folder_writable",
+      "tests_test_folder_permissions_test_output_folder_writable"
+    ],
+    "10": [
+      "scripts_verify_columns_and_generate_py"
+    ],
+    "11": [
+      "scripts_tmp_run_march_check_py"
+    ],
+    "12": [
+      "scripts_diag_check_normalized_py"
+    ],
+    "13": [
+      "scripts_test_manual_loader_py"
+    ],
+    "14": [
+      "scripts_check_gl_load_py"
+    ],
+    "15": [
+      "scripts_list_sheets_py"
+    ],
+    "16": [
+      "scripts_build_windows_py"
+    ],
+    "17": [
+      "scripts_list_columns_py"
+    ],
+    "18": [
+      "scripts_preview_norm_py"
+    ],
+    "19": [
+      "scripts_inspect_raw_recharge_py"
+    ],
+    "20": [
+      "scripts_list_raw_cols_py"
+    ],
+    "21": [
+      "scripts_print_jv_amounts_py"
+    ],
+    "22": [
+      "scripts_run_engine_cli_py"
+    ]
+  },
+  "cohesion": {
+    "0": 0.14285714285714285,
+    "1": 0.12857142857142856,
+    "2": 0.15789473684210525,
+    "3": 0.125,
+    "4": 0.1523809523809524,
+    "5": 0.3055555555555556,
+    "6": 0.2857142857142857,
+    "7": 0.3333333333333333,
+    "8": 0.5,
+    "9": 0.6666666666666666,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0
+  },
+  "gods": [
+    {
+      "id": "scripts_engine_jvengine",
+      "label": "JVEngine",
+      "degree": 16
+    },
+    {
+      "id": "scripts_normalizer_billingnormalizer",
+      "label": "BillingNormalizer",
+      "degree": 15
+    },
+    {
+      "id": "scripts_main_gui_app",
+      "label": "App",
+      "degree": 10
+    },
+    {
+      "id": "jv_billingsheet_automation_app_main",
+      "label": "main()",
+      "degree": 6
+    },
+    {
+      "id": "jv_billingsheet_automation_app_load_billing_sheet",
+      "label": "load_billing_sheet()",
+      "degree": 5
+    },
+    {
+      "id": "scripts_ai_mapper_aimapper",
+      "label": "AIMapper",
+      "degree": 5
+    },
+    {
+      "id": "jv_billingsheet_automation_app_make_credit_row",
+      "label": "make_credit_row()",
+      "degree": 4
+    },
+    {
+      "id": "jv_billingsheet_automation_app_build_jv_rows",
+      "label": "build_jv_rows()",
+      "degree": 4
+    },
+    {
+      "id": "jv_billingsheet_automation_app_write_output",
+      "label": "write_output()",
+      "degree": 4
+    },
+    {
+      "id": "jv_billingsheet_automation_app_validate",
+      "label": "validate()",
+      "degree": 4
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Write final JV rows to Excel in SAP upload column order, including the 2 extra h",
+      "target": "write_output()",
+      "source_files": [
+        "scripts/engine.py",
+        "app.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "rationale_for",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "App",
+      "target": "JVEngine",
+      "source_files": [
+        "scripts/main_gui.py",
+        "scripts/engine.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "App",
+      "target": "BillingNormalizer",
+      "source_files": [
+        "scripts/main_gui.py",
+        "scripts/normalizer.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

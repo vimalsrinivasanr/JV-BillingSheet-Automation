@@ -5,8 +5,8 @@ from difflib import get_close_matches
 from engine import JVEngine
 
 base = '/Users/macbook/Downloads/Library/PROJECTS/Randstad/JV-BillingSheet-Automation'
-feb_path = os.path.join(base, 'Input Data.xlsx')
-normalized_path = os.path.join(base, 'Input Data March_NORMALIZED.xlsx')
+feb_path = os.path.join(base, 'input', 'Input Data.xlsx')
+normalized_path = os.path.join(base, 'input', 'Input Data March_NORMALIZED.xlsx')
 final_out = os.path.join(base, 'SAP_JV_Upload_Mar26_FINAL.xlsx')
 
 # 1) Compare normalized headers to February reference headers

@@ -235,7 +235,17 @@ class JVEngine:
         )
         
         for col in self.GL_COL_NAMES:
-            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0).abs()
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
+            
+        # Aggregate duplicate employee rows under the same invoice
+        group_cols = ["invoice_no", "workday_id", "emp_no_ref"]
+        agg_dict = {}
+        for c in df.columns:
+            if c in self.GL_COL_NAMES:
+                agg_dict[c] = "sum"
+            elif c not in group_cols:
+                agg_dict[c] = "first"
+        df = df.groupby(group_cols, as_index=False).agg(agg_dict)
             
         df = df.sort_values(by=["invoice_no", "workday_id"]).reset_index(drop=True)
         return self._build_rows(df)
@@ -417,18 +427,21 @@ class JVEngine:
             debits = []
             for _, emp in inv_df.iterrows():
                 for gl_col, gl_code in zip(self.GL_COL_NAMES, self.GL_CODES):
-                    if abs(emp[gl_col]) < 0.01: continue
-                    r = self._get_full_row()
-                    # Use negative of input value so output = -input (inverts sign when input is negative)
                     try:
-                        amt_val = abs(float(emp[gl_col]))
+                        raw_val = float(emp[gl_col])
                     except Exception:
-                        amt_val = 0.0
+                        raw_val = 0.0
+                    if abs(raw_val) < 0.01: continue
+                    
+                    amt_val = -1.0 * raw_val
+                    posting_key = "40" if amt_val < 0 else "50"
+                    
+                    r = self._get_full_row()
                     r.update({
                         "Reference": 0, "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
                         "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
                         "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
-                        "Amount": self.d2(-amt_val), "Posting Key": self.DEBIT_POSTING_KEY,
+                        "Amount": self.d2(amt_val), "Posting Key": posting_key,
                         "Account": gl_code, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
                         "Assignment Number (20)": inv, "Item Text (50)": doc_header,
                         "Ref Key 1": ic_code, "Ref Key 2": emp["cap_center_ref"], "Ref Key 3 (20)": emp["emp_no_ref"],
@@ -443,14 +456,13 @@ class JVEngine:
             i = 0
             while i < len(debits):
                 batch = debits[i:i+batch_max]
-                batch_credit = sum(Decimal(str(abs(d["Amount"]))) for d in batch)
                 
                 cr = self._get_full_row()
                 cr.update({
                     "Reference": int(serial_counter), "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
                     "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
                     "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
-                    "Amount": self.d2(float(batch_credit)), "Posting Key": self.CREDIT_POSTING_KEY,
+                    "Amount": f"=-SUM(J{len(rows) + 3}:J{len(rows) + len(batch) + 2})", "Posting Key": self.CREDIT_POSTING_KEY,
                     "Account": self.CREDIT_ACCOUNT, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
                     "Assignment Number (20)": inv, "Item Text (50)": doc_header,
                     "Ref Key 1": ic_code, "Inovice Receipt Date": self.MONTH_END_DATE
@@ -476,7 +488,6 @@ class JVEngine:
             
         df_data.columns = SAP_COLUMNS
 
-        # Write DataFrame directly so the column header row becomes the first row
         with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
             df_data.to_excel(writer, sheet_name="JV", index=False, header=True, startrow=0)
 
@@ -486,7 +497,6 @@ class JVEngine:
         ws = wb["JV"]
 
         amt_col_idx = 10 # Column 'J'
-        # After removing the two extra header rows, header is row 1 and data starts at row 2
         data_start = 2
         last_data_row = data_start - 1
         for row in range(data_start, ws.max_row + 1):

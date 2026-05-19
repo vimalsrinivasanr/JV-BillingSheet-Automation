@@ -1,0 +1,71 @@
+Loading /Users/macbook/Downloads/Library/PROJECTS/Randstad/JV-BillingSheet-Automation/output/manual_output/Output Apr'26.xlsx...
+Using sheet: 'Sheet1'
+Loaded 8218 non-empty rows.
+Loading /Users/macbook/Downloads/Library/PROJECTS/Randstad/JV-BillingSheet-Automation/output/input file/SAP_JV_Upload_Run.xlsx...
+Using sheet: 'JV'
+Loaded 8320 non-empty rows.
+
+--- Row Counts ---
+Manual non-empty rows: 8218
+Automated non-empty rows: 8320
+
+--- Totals check ---
+Manual Posting Keys unique values: [40. 50.]
+Auto Posting Keys unique values: [40. 50.]
+Manual: Debits Sum = 1,650,018.14 (35 rows), Credits Sum = -1,650,018.14 (8183 rows)
+Auto:   Debits Sum = 1,650,018.14 (35 rows), Credits Sum = -237,537,803.14 (8285 rows)
+
+--- Sign check ---
+Are manual debits all negative? False
+Are manual credits all positive? False
+Are auto debits all negative? False
+Manual debits: min=3,636.99, max=262,198.86
+Manual credits: min=-1,276,678.67, max=38,939,903.47
+Auto debits: min=3,636.99, max=262,198.86
+Auto credits: min=-1,123,593.00, max=0.00
+
+--- Invoices and Credit amounts ---
+Unique Invoices - Manual: 35, Auto: 35
+Invoices in Manual but not Auto (showing first 10): []
+Invoices in Auto but not Manual (showing first 10): []
+
+Invoices with credit differences (showing first 10):
+  Invoice: 30001442.0 | Manual: 0.00 | Auto: -137,000.09 | Diff: 137,000.09
+  Invoice: 30001464.0 | Manual: 0.00 | Auto: -874,555.76 | Diff: 874,555.76
+  Invoice: 30001459.0 | Manual: 0.00 | Auto: -216,116.38 | Diff: 216,116.38
+  Invoice: 30001458.0 | Manual: -0.00 | Auto: -166,663.63 | Diff: 166,663.63
+  Invoice: 30001441.0 | Manual: 0.00 | Auto: -943,624.39 | Diff: 943,624.39
+  Invoice: 30001456.0 | Manual: -0.00 | Auto: -19,642.00 | Diff: 19,642.00
+  Invoice: 30001447.0 | Manual: 0.00 | Auto: -373,047.88 | Diff: 373,047.88
+  Invoice: 30001437.0 | Manual: -0.00 | Auto: -816,667.74 | Diff: 816,667.74
+  Invoice: 30001461.0 | Manual: -0.00 | Auto: -16,820,475.26 | Diff: 16,820,475.26
+  Invoice: 30001434.0 | Manual: 0.00 | Auto: -389,609.18 | Diff: 389,609.18
+Total invoices with credit differences: 35
+
+--- Investigating detailed rows for sample invoice 30001442.0 ---
+Manual rows for 30001442.0:
+     Ref Key 3 (20)  Posting Key   Account     Amount
+7848            NaN         40.0  500003.0  137000.09
+7849       W0004781         40.0  742234.0  -71459.05
+7850       W0004781         40.0  742235.0   -4154.17
+7851       W0004781         40.0  742236.0  -29700.00
+7852       W0004781         40.0  742237.0   -1430.30
+7853       W0004781         40.0  842028.0   -5337.18
+7854       W0005290         40.0  742234.0  -19885.76
+7855       W0005290         40.0  742235.0    -415.42
+7856       W0005290         40.0  742236.0   -2970.00
+7857       W0005290         40.0  742237.0    -461.57
+7858       W0005290         40.0  842028.0   -1186.64
+Auto rows for 30001442.0:
+     Ref Key 3 (20)  Posting Key   Account    Amount
+4846            NaN         40.0  500003.0      0.00
+4847       W0004781         40.0  742234.0 -71459.05
+4848       W0004781         40.0  742235.0  -4154.17
+4849       W0004781         40.0  742236.0 -29700.00
+4850       W0004781         40.0  742237.0  -1430.30
+4851       W0004781         40.0  842028.0  -5337.18
+4852       W0005290         40.0  742234.0 -19885.76
+4853       W0005290         40.0  742235.0   -415.42
+4854       W0005290         40.0  742236.0  -2970.00
+4855       W0005290         40.0  742237.0   -461.57
+4856       W0005290         40.0  842028.0  -1186.64
