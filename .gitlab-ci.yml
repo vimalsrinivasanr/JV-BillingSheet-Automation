@@ -1,0 +1,29 @@
+stages:
+  - lint
+  - test
+  - build
+
+lint:
+  image: python:3.12
+  stage: lint
+  script:
+    - pip install flake8
+    - flake8 .
+
+test:
+  image: python:3.12
+  stage: test
+  script:
+    - pip install -r requirements.txt || true  # Continue if requirements.txt is missing
+    - pip install pytest
+    - pytest tests
+
+build:
+  image: python:3.12
+  stage: build
+  script:
+    - pip install pyinstaller
+    - pyinstaller scripts/build_windows.py
+  artifacts:
+    paths:
+      - dist/

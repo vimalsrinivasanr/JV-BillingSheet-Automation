@@ -1,3 +1,16 @@
+"""
+App entry point: wires together MVC components.
+"""
+
+from views.main_view import MainView
+from controllers.main_controller import MainController
+
+if __name__ == "__main__":
+    controller = MainController(None)
+    app = MainView(controller)
+    controller.view = app
+    app.mainloop()
+
 import pandas as pd
 import os
 import sys
@@ -50,7 +63,7 @@ COL = {
     "classification":   42,    # AQ — Classification (Billable / Non Billable)
     "billed_status":    79,    # CB — Billed / Unbilled / Accruals
     "ic_code":          80,    # CC — IC Code  (= Ref Key 1)
-    "customer_code":    81,    # CD — Customer Code
+    # "customer_code":    81,    # CD — Customer Code (REMOVED, not needed)
     "invoice_no":       82,    # CE — Invoice Number
     "emp_no_ref":       83,    # CF — EmpNo ref  (= Ref Key 3)
     "cap_center_ref":   84,    # CG — Capability Center ref  (= Ref Key 2)
@@ -68,8 +81,26 @@ GL_CODES     = [742234,       742238,       742235,       742236,       742237, 
 
 def load_billing_sheet(filepath):
     """Load billing sheet. Row 0 = GL category, Row 1 = real headers, Row 2+ = data."""
+
     print(f"  Loading billing sheet: {filepath}")
-    raw = pd.read_excel(filepath, sheet_name="Billing sheet", header=None, dtype=str)
+    # Detect sheets
+    xl = pd.ExcelFile(filepath)
+    if len(xl.sheet_names) == 1:
+        sheet_to_use = xl.sheet_names[0]
+        print(f"  Only one sheet found: '{sheet_to_use}' (auto-selected)")
+    else:
+        print("  Multiple sheets found:")
+        for idx, name in enumerate(xl.sheet_names):
+            print(f"    {idx+1}: {name}")
+        sel = input(f"Select sheet number (1-{len(xl.sheet_names)}): ")
+        try:
+            sel_idx = int(sel) - 1
+            sheet_to_use = xl.sheet_names[sel_idx]
+        except Exception:
+            print("  Invalid selection. Exiting.")
+            sys.exit(1)
+
+    raw = pd.read_excel(filepath, sheet_name=sheet_to_use, header=None, dtype=str)
 
     # Row index 2 (Excel row 3) is the actual column-name row
     # Row index 3 onwards is data
@@ -78,8 +109,9 @@ def load_billing_sheet(filepath):
     data.columns = col_names
     data = data.reset_index(drop=True)
 
-    # Pull only the columns we need by position
-    cols_needed = {name: data.columns[pos] for name, pos in COL.items()}
+
+    # Pull only the columns we need by position (excluding customer_code)
+    cols_needed = {name: data.columns[pos] for name, pos in COL.items() if name != "customer_code"}
     df = pd.DataFrame()
     for field, col_label in cols_needed.items():
         df[field] = data.iloc[:, COL[field]]
@@ -441,8 +473,15 @@ def main():
     print(f"  Month: {MONTH_LABEL}   Date: {MONTH_END_DATE}")
     print("=" * 55)
 
+    # Update these paths to use the new folder structure
+    INPUT_DIR = "input"
+    NORMALIZED_DIR = "normalized"
+    OUTPUT_DIR = "output"
+
+    BILLING_FILE = os.path.join(INPUT_DIR, "Input Data.xlsx")
+
     if not os.path.exists(BILLING_FILE):
-        print(f"\nERROR: Cannot find '{BILLING_FILE}'. Make sure it is in the same folder as this script.")
+        print(f"\nERROR: Cannot find '{BILLING_FILE}'. Make sure it is in the input folder.")
         sys.exit(1)
 
     print("\n[1] Loading billing sheet...")
@@ -459,7 +498,8 @@ def main():
 
     print("\n[5] Writing output file...")
     out_filename = f"SAP_JV_Upload_{MONTH_LABEL.replace(chr(39),'')}.xlsx"
-    write_output(rows, out_filename)
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+    write_output(rows, out_path)
 
     print("\nDone!")
     print(f"  File ready: {out_filename}")

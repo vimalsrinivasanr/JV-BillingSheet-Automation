@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['main_gui.py'],
+    ['scripts\\main_gui.py'],
     pathex=[],
     binaries=[],
     datas=[('C:\\Users\\vimalsrinivasan.r\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\customtkinter', 'customtkinter')],
