@@ -418,7 +418,7 @@ class JVEngine:
     def _get_posting_key(self, account, amount):
         """Derive the SAP posting key from account length and the amount sign.
 
-        Implements the same logic as the Excel formula:
+        Implements the same logic as the correct Excel formula:
         =IF(LEN(L6)>6,IF(J6>0,21,31),IF(LEN(L6)=6,IF(J6>0,40,50),IF(J6>0,"01",11)))
         """
         acct = str(account or "").strip()
@@ -481,7 +481,7 @@ class JVEngine:
                     "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
                     "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
                     "Amount": f"=-SUM(J{len(rows) + 3}:J{len(rows) + len(batch) + 2})",
-                    "Posting Key": self._get_posting_key(self.CREDIT_ACCOUNT, -1.0),
+                    "Posting Key": self._get_posting_key(self.CREDIT_ACCOUNT, 1.0),
                     "Account": self.CREDIT_ACCOUNT, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
                     "Assignment Number (20)": inv, "Item Text (50)": doc_header,
                     "Ref Key 1": ic_code, "Inovice Receipt Date": self.MONTH_END_DATE

@@ -21,6 +21,7 @@ class App(ctk.CTk):
         self.input_path = ""
         self.normalized_path = ""
         self.output_dir = os.path.dirname(os.path.abspath(__file__))
+        self.output_file_path = ""
 
         # UI Elements
         self.grid_columnconfigure(1, weight=1)
@@ -75,6 +76,22 @@ class App(ctk.CTk):
         self.textbox.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
         self.textbox.insert("0.0", "System ready.\n")
 
+        # Output Actions Frame
+        self.actions_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.actions_frame.grid(row=5, column=0, padx=20, pady=(10, 20), sticky="ew")
+        self.actions_frame.grid_columnconfigure(0, weight=1)
+        self.actions_frame.grid_columnconfigure(1, weight=1)
+
+        self.btn_open_file = ctk.CTkButton(self.actions_frame, text="Open Generated JV", 
+                                            state="disabled", fg_color="#444", hover_color="#555",
+                                            command=self.open_generated_file)
+        self.btn_open_file.grid(row=0, column=0, padx=10, pady=5, sticky="ew")
+
+        self.btn_show_in_finder = ctk.CTkButton(self.actions_frame, text="Locate in Finder / Explorer", 
+                                                state="disabled", fg_color="#444", hover_color="#555",
+                                                command=self.show_in_finder)
+        self.btn_show_in_finder.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
+
     def add_sidebar_entry(self, label, default, row):
         lbl = ctk.CTkLabel(self.sidebar_frame, text=label, anchor="w")
         lbl.grid(row=row, column=0, padx=20, pady=(10, 0), sticky="w")
@@ -104,6 +121,9 @@ class App(ctk.CTk):
             return
         
         self.btn_run.configure(state="disabled")
+        self.btn_open_file.configure(state="disabled", fg_color="#444")
+        self.btn_show_in_finder.configure(state="disabled", fg_color="#444")
+        self.output_file_path = ""
         threading.Thread(target=self.run_engine, name="Engine").start()
 
     def run_engine(self):
@@ -142,6 +162,8 @@ class App(ctk.CTk):
             
             self.log(f"SUCCESS: {out_name} generated.")
             # Thread-safe UI update
+            self.output_file_path = out_path
+            self.after(0, self.enable_output_buttons)
             self.after(0, lambda: messagebox.showinfo("Success", f"JV File Generated!\n\nLocation: {out_path}"))
             
         except Exception as e:
@@ -151,6 +173,50 @@ class App(ctk.CTk):
             self.after(0, lambda: messagebox.showerror("Processing Error", f"Failed to process file:\n{err_msg}"))
         finally:
             self.after(0, lambda: self.btn_run.configure(state="normal"))
+
+    def enable_output_buttons(self):
+        self.btn_open_file.configure(state="normal", fg_color="#1f538d", hover_color="#183f6c")
+        self.btn_show_in_finder.configure(state="normal", fg_color="#285", hover_color="#274")
+
+    def open_generated_file(self):
+        if not self.output_file_path or not os.path.exists(self.output_file_path):
+            messagebox.showerror("Error", "File does not exist or has not been generated yet.")
+            return
+        
+        try:
+            import platform
+            import subprocess
+            system = platform.system()
+            if system == "Darwin": # macOS
+                subprocess.call(["open", self.output_file_path])
+            elif system == "Windows":
+                os.startfile(self.output_file_path)
+            else: # Linux/other
+                subprocess.call(["xdg-open", self.output_file_path])
+            self.log(f"Opened file: {self.output_file_path}")
+        except Exception as e:
+            self.log(f"Failed to open file: {e}")
+            messagebox.showerror("Error", f"Could not open file:\n{e}")
+
+    def show_in_finder(self):
+        if not self.output_file_path or not os.path.exists(self.output_file_path):
+            messagebox.showerror("Error", "File does not exist or has not been generated yet.")
+            return
+        
+        try:
+            import platform
+            import subprocess
+            system = platform.system()
+            if system == "Darwin": # macOS
+                subprocess.call(["open", "-R", self.output_file_path])
+            elif system == "Windows":
+                subprocess.call(["explorer", "/select,", os.path.normpath(self.output_file_path)])
+            else: # Linux/other
+                subprocess.call(["xdg-open", os.path.dirname(self.output_file_path)])
+            self.log(f"Located file in file manager: {self.output_file_path}")
+        except Exception as e:
+            self.log(f"Failed to locate file: {e}")
+            messagebox.showerror("Error", f"Could not locate file:\n{e}")
 
 if __name__ == "__main__":
     app = App()

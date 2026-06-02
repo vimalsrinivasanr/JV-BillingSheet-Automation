@@ -158,16 +158,27 @@ class BillingNormalizer:
             sheet_to_use = xl.sheet_names[0]
             self.log(f"[Normalizer] Only one sheet found: '{sheet_to_use}' (auto-selected)")
         else:
-            self.log(f"[Normalizer] Multiple sheets found:")
-            for idx, name in enumerate(xl.sheet_names):
-                self.log(f"    {idx+1}: {name}")
-            sel = input(f"Select sheet number (1-{len(xl.sheet_names)}): ")
-            try:
-                sel_idx = int(sel) - 1
-                sheet_to_use = xl.sheet_names[sel_idx]
-            except Exception:
-                print("  Invalid selection. Exiting.")
-                import sys; sys.exit(1)
+            # Try to auto-select sheet containing 'billing'
+            billing_sheets = [s for s in xl.sheet_names if "billing" in s.lower()]
+            if billing_sheets:
+                sheet_to_use = billing_sheets[0]
+                self.log(f"[Normalizer] Multiple sheets found. Auto-selecting billing sheet: '{sheet_to_use}'")
+            else:
+                self.log(f"[Normalizer] Multiple sheets found:")
+                for idx, name in enumerate(xl.sheet_names):
+                    self.log(f"    {idx+1}: {name}")
+                import sys
+                if not sys.stdin.isatty():
+                    sheet_to_use = xl.sheet_names[0]
+                    self.log(f"[Normalizer] Non-interactive environment. Auto-selected first sheet: '{sheet_to_use}'")
+                else:
+                    sel = input(f"Select sheet number (1-{len(xl.sheet_names)}): ")
+                    try:
+                        sel_idx = int(sel) - 1
+                        sheet_to_use = xl.sheet_names[sel_idx]
+                    except Exception:
+                        print("  Invalid selection. Exiting.")
+                        import sys; sys.exit(1)
 
         raw = pd.read_excel(input_path, sheet_name=sheet_to_use, header=None, dtype=str)
         self.log(f"[Normalizer] Raw sheet: {len(raw)} rows × {len(raw.columns)} cols")
@@ -211,9 +222,24 @@ class BillingNormalizer:
         synth   = sum(1 for r in self._report if r["status"] == "SYNTHESIZED")
         missing = sum(1 for r in self._report if r["status"] == "MISSING")
         self.log(f"[Normalizer] Mapping: {found} found, {synth} synthesised, {missing} missing")
+        
+        # Define critical columns for the JV generation process
+        CRITICAL_COLS = {
+            "EmpNo", "Capability Center", "Billed/ Unbilled",
+            "IC Code", "Invoice No.", "Recharge - Payroll", "Recharge - Manager",
+            "Recharge - Leadership", "Recharge - Desk Cost", "Recharge - Retirals", "Mark up"
+        }
+        
         for r in self._report:
-            if r["status"] == "MISSING":
-                self.log(f"  ⚠  MISSING column: [{r['canonical']}]")
+            if r["status"] == "MISSING" and r["canonical"] in CRITICAL_COLS:
+                # If EmpNo is missing, check if Workday ID was found instead
+                if r["canonical"] == "EmpNo":
+                    workday_id_status = next((x["status"] for x in self._report if x["canonical"] == "Workday ID"), "MISSING")
+                    if workday_id_status == "MISSING":
+                        self.log(f"  ⚠  CRITICAL MISSING column: [{r['canonical']}] (and Workday ID is also missing)")
+                else:
+                    self.log(f"  ⚠  CRITICAL MISSING column: [{r['canonical']}]")
+                    
         for w in self._warnings:
             self.log(f"  ⚠  WARNING: {w}")
         self.log(f"[Normalizer] Output: {os.path.basename(output_path)}")
@@ -226,9 +252,13 @@ class BillingNormalizer:
     def _detect_header_row(self, raw):
         """
         Scan up to row 20 for a row that contains at least 2 of the anchor
-        tokens: 'workday id', 'empno', 'name'.
+        tokens: 'workday id', 'empno', 'name', 'billed/ unbilled', 'ic code',
+        'invoice no.', 'recharge  general cost - payroll'.
         """
-        anchors = {"workday id", "empno", "name"}
+        anchors = {
+            "workday id", "empno", "name", "billed/ unbilled", "ic code", 
+            "invoice no.", "recharge  general cost - payroll"
+        }
         for i in range(min(20, len(raw))):
             row_lower = {str(v).strip().lower() for v in raw.iloc[i] if pd.notna(v)}
             if len(anchors & row_lower) >= 2:
@@ -258,10 +288,6 @@ class BillingNormalizer:
         col_map = {}  # canonical → source col name or None
 
         for (canon, feb_idx, dtype, aliases) in GOLDEN_SCHEMA:
-            if canon in CALCULATED_COLS:
-                col_map[canon] = None
-                continue
-
             found_src = None
             method    = None
 
@@ -273,6 +299,19 @@ class BillingNormalizer:
                     found_src = header_lc[key]
                     method    = f"header alias '{t}'"
                     break
+
+            # If it's a calculated column and we did NOT find it in the headers, we let the formula calculate it
+            if canon in CALCULATED_COLS:
+                if not found_src:
+                    col_map[canon] = None
+                    self._report.append({
+                        "canonical":  canon,
+                        "feb_idx":    feb_idx,
+                        "status":     "CALCULATED",
+                        "source_col": None,
+                        "method":     "GL formula",
+                    })
+                    continue
 
             # B. Data fingerprint
             if not found_src and canon in fp_map.values():
@@ -388,8 +427,6 @@ class BillingNormalizer:
         return df
 
     # ─────────────────────────────────────────────────────────────────────────
-    #  Step 5 – Calculate GL recharge columns
-    # ─────────────────────────────────────────────────────────────────────────
     def _calculate_gl(self, df):
         """
         Compute the formula-derived columns (equivalent to Feb CB–CM).
@@ -400,13 +437,28 @@ class BillingNormalizer:
                 return pd.to_numeric(df[col], errors="coerce").fillna(0.0)
             return pd.Series([0.0] * len(df), index=df.index)
 
-        df["Recharge - Payroll"]    = n("Fixed CTC") + n("Bonus 2026") + \
-                                      n("PF admin Monthly") + n("EDLI Monthly")
-        df["Recharge - Manager"]    = n("Managers desk fee") + n("Manager cost")
-        df["Recharge - Leadership"] = n("Leadership cost")
-        df["Recharge - Desk Cost"]  = n("Gross Desk Cost")
-        df["Recharge - Retirals"]   = n("Gratuity") + n("Leave Encashment")
-        df["Mark up"]               = n("TP on total cost") + n("TP on desk cost")
+        def is_populated(col_name):
+            if col_name not in df.columns:
+                return False
+            try:
+                vals = pd.to_numeric(df[col_name], errors="coerce").dropna()
+                return (vals.abs().sum() > 0)
+            except Exception:
+                return False
+
+        if not is_populated("Recharge - Payroll"):
+            df["Recharge - Payroll"]    = n("Fixed CTC") + n("Bonus 2026") + \
+                                          n("PF admin Monthly") + n("EDLI Monthly")
+        if not is_populated("Recharge - Manager"):
+            df["Recharge - Manager"]    = n("Managers desk fee") + n("Manager cost")
+        if not is_populated("Recharge - Leadership"):
+            df["Recharge - Leadership"] = n("Leadership cost")
+        if not is_populated("Recharge - Desk Cost"):
+            df["Recharge - Desk Cost"]  = n("Gross Desk Cost")
+        if not is_populated("Recharge - Retirals"):
+            df["Recharge - Retirals"]   = n("Gratuity") + n("Leave Encashment")
+        if not is_populated("Mark up"):
+            df["Mark up"]               = n("TP on total cost") + n("TP on desk cost")
 
         # Diff = Total billable – sum of all recharge columns (should be 0)
         sum_recharge = (df["Recharge - Payroll"] + df["Recharge - Manager"] +
@@ -414,11 +466,12 @@ class BillingNormalizer:
                         df["Recharge - Retirals"] + df["Mark up"])
         df["Diff"] = (n("Total billable amount") - sum_recharge).round(2)
 
-        # Update report
+        # Update report status only for columns that were ACTUALLY calculated by formula
         for r in self._report:
             if r["canonical"] in CALCULATED_COLS:
-                r["status"] = "CALCULATED"
-                r["method"] = "GL formula"
+                if not is_populated(r["canonical"]):
+                    r["status"] = "CALCULATED"
+                    r["method"] = "GL formula"
 
         self.log("[Normalizer] GL recharge columns calculated.")
         return df
