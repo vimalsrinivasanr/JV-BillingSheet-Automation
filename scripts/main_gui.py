@@ -123,25 +123,11 @@ class App(ctk.CTk):
                 self.normalized_path = self.input_path
                 self.log("Detected normalized input. Skipping Stage 1.")
             else:
-                # Detect if the user provided a manual 'filter-check' sheet (trimmed workbook)
-                first = xls.sheet_names[0]
-                try:
-                    cols = pd.read_excel(self.input_path, sheet_name=first, nrows=0).columns.tolist()
-                except Exception:
-                    cols = []
-
-                manual_keywords = ["Invoice No.", "Billed/ Unbilled", "Recharge - Payroll", "Mark up", "EmpNo", "Workday ID"]
-                is_manual = any(k in cols for k in manual_keywords)
-
-                if is_manual:
-                    self.normalized_path = self.input_path
-                    self.log(f"Detected manual filter-check sheet '{first}'. Skipping Stage 1 normalization.")
-                else:
-                    self.log("Running Stage 1 normalization automatically...")
-                    normalizer = BillingNormalizer(log_callback=self.log)
-                    out_path, _ = normalizer.normalize(self.input_path)
-                    self.normalized_path = out_path
-                    self.log(f"Normalization complete: {os.path.basename(out_path)}")
+                self.log("Running Stage 1 normalization automatically...")
+                normalizer = BillingNormalizer(log_callback=self.log)
+                out_path, _ = normalizer.normalize(self.input_path)
+                self.normalized_path = out_path
+                self.log(f"Normalization complete: {os.path.basename(out_path)}")
             
             engine = JVEngine(config)
             rows = engine.run_processing(self.normalized_path, log_callback=self.log)
