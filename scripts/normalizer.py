@@ -140,7 +140,7 @@ class BillingNormalizer:
         self._report   = []   # list of dicts for Mapping Report sheet
 
     # ─────────────────────────────────────────────────────────────────────────
-    def normalize(self, input_path, output_path=None):
+    def normalize(self, input_path, output_path=None, standard_sheet=None, billable_cost_sheet=None):
         """
         Main entry point.
         Returns (output_path, report_list).
@@ -152,98 +152,106 @@ class BillingNormalizer:
         self.log(f"[Normalizer] Reading: {fname}")
 
 
-        # Auto-detect sheet name if only one, else prompt user
+        # Check sheet names to detect standard billing sheet and Billable Cost sheet
         xl = pd.ExcelFile(input_path)
-        if len(xl.sheet_names) == 1:
-            sheet_to_use = xl.sheet_names[0]
-            self.log(f"[Normalizer] Only one sheet found: '{sheet_to_use}' (auto-selected)")
+        sheet_names = xl.sheet_names
+        
+        # If both are None, auto-detect sheets
+        if standard_sheet is None and billable_cost_sheet is None:
+            for s in sheet_names:
+                if "billable cost" in s.lower():
+                    billable_cost_sheet = s
+                elif "billing" in s.lower() or s == "Normalized":
+                    standard_sheet = s
+            # If standard_sheet is not set, try to pick first sheet that is not Billable Cost
+            if not standard_sheet:
+                candidates = [s for s in sheet_names if s != billable_cost_sheet]
+                if candidates:
+                    standard_sheet = candidates[0]
+
+        if billable_cost_sheet == "[Skip / None]":
+            billable_cost_sheet = None
+
+        if standard_sheet == "[Skip / None]":
+            standard_sheet = None
+
+        billable_cost_df = None
+        if billable_cost_sheet and billable_cost_sheet in sheet_names:
+            self.log(f"[Normalizer] Found Billable Cost sheet: '{billable_cost_sheet}' (will copy to normalized file)")
+            billable_cost_df = pd.read_excel(input_path, sheet_name=billable_cost_sheet, dtype=str).fillna("")
+
+        norm = pd.DataFrame()
+        if standard_sheet and standard_sheet in sheet_names:
+            self.log(f"[Normalizer] Standard billing sheet selected: '{standard_sheet}'")
+            raw = pd.read_excel(input_path, sheet_name=standard_sheet, header=None, dtype=str)
+            self.log(f"[Normalizer] Raw standard sheet: {len(raw)} rows × {len(raw.columns)} cols")
+
+            # ── 1. Find header row
+            hdr_row, data_start = self._detect_header_row(raw)
+            self.log(f"[Normalizer] Header at row {hdr_row}, data starts row {data_start}")
+
+            headers   = [str(h).strip() if pd.notna(h) else "" for h in raw.iloc[hdr_row]]
+            data      = raw.iloc[data_start:].copy().reset_index(drop=True)
+            data.columns = headers
+
+            # ── 2. Build column map: canonical → source_col_name (or None)
+            col_map = self._build_col_map(headers, data)
+
+            # ── 3. Assemble normalized DataFrame
+            norm = self._assemble(col_map, data)
+
+            # ── 4. Synthesise missing critical columns
+            norm = self._synthesise(norm)
+
+            # ── 5. Calculate GL recharge columns
+            norm = self._calculate_gl(norm)
+
+            # ── 6. Drop rows with no Workday ID
+            before = len(norm)
+            norm["Workday ID"] = norm["Workday ID"].astype(str).str.strip()
+            norm = norm[~norm["Workday ID"].isin(["", "nan", "None"])]
+            self.log(f"[Normalizer] Dropped {before - len(norm)} empty rows; "
+                     f"{len(norm)} rows remain.")
         else:
-            # Try to auto-select sheet containing 'billing'
-            billing_sheets = [s for s in xl.sheet_names if "billing" in s.lower()]
-            if billing_sheets:
-                sheet_to_use = billing_sheets[0]
-                self.log(f"[Normalizer] Multiple sheets found. Auto-selecting billing sheet: '{sheet_to_use}'")
-            else:
-                self.log(f"[Normalizer] Multiple sheets found:")
-                for idx, name in enumerate(xl.sheet_names):
-                    self.log(f"    {idx+1}: {name}")
-                import sys
-                if not sys.stdin.isatty():
-                    sheet_to_use = xl.sheet_names[0]
-                    self.log(f"[Normalizer] Non-interactive environment. Auto-selected first sheet: '{sheet_to_use}'")
-                else:
-                    sel = input(f"Select sheet number (1-{len(xl.sheet_names)}): ")
-                    try:
-                        sel_idx = int(sel) - 1
-                        sheet_to_use = xl.sheet_names[sel_idx]
-                    except Exception:
-                        print("  Invalid selection. Exiting.")
-                        import sys; sys.exit(1)
-
-        raw = pd.read_excel(input_path, sheet_name=sheet_to_use, header=None, dtype=str)
-        self.log(f"[Normalizer] Raw sheet: {len(raw)} rows × {len(raw.columns)} cols")
-
-        # ── 1. Find header row
-        hdr_row, data_start = self._detect_header_row(raw)
-        self.log(f"[Normalizer] Header at row {hdr_row}, data starts row {data_start}")
-
-        headers   = [str(h).strip() if pd.notna(h) else "" for h in raw.iloc[hdr_row]]
-        data      = raw.iloc[data_start:].copy().reset_index(drop=True)
-        data.columns = headers
-
-        # ── 2. Build column map: canonical → source_col_name (or None)
-        col_map = self._build_col_map(headers, data)
-
-        # ── 3. Assemble normalized DataFrame
-        norm = self._assemble(col_map, data)
-
-        # ── 4. Synthesise missing critical columns
-        norm = self._synthesise(norm)
-
-        # ── 5. Calculate GL recharge columns
-        norm = self._calculate_gl(norm)
-
-        # ── 6. Drop rows with no Workday ID
-        before = len(norm)
-        norm["Workday ID"] = norm["Workday ID"].astype(str).str.strip()
-        norm = norm[~norm["Workday ID"].isin(["", "nan", "None"])]
-        self.log(f"[Normalizer] Dropped {before - len(norm)} empty rows; "
-                 f"{len(norm)} rows remain.")
+            self.log("[Normalizer] No standard billing sheet to normalize. Copying only.")
 
         # ── 7. Write Excel
         if output_path is None:
             base, _ = os.path.splitext(input_path)
             output_path = base + "_NORMALIZED.xlsx"
 
-        self._write_excel(norm, output_path)
+        self._write_excel(norm, output_path, billable_cost_df)
 
-        # ── 8. Summary log
-        found   = sum(1 for r in self._report if r["status"] == "FOUND")
-        synth   = sum(1 for r in self._report if r["status"] == "SYNTHESIZED")
-        missing = sum(1 for r in self._report if r["status"] == "MISSING")
-        self.log(f"[Normalizer] Mapping: {found} found, {synth} synthesised, {missing} missing")
-        
-        # Define critical columns for the JV generation process
-        CRITICAL_COLS = {
-            "EmpNo", "Capability Center", "Billed/ Unbilled",
-            "IC Code", "Invoice No.", "Recharge - Payroll", "Recharge - Manager",
-            "Recharge - Leadership", "Recharge - Desk Cost", "Recharge - Retirals", "Mark up"
-        }
-        
-        for r in self._report:
-            if r["status"] == "MISSING" and r["canonical"] in CRITICAL_COLS:
-                # If EmpNo is missing, check if Workday ID was found instead
-                if r["canonical"] == "EmpNo":
-                    workday_id_status = next((x["status"] for x in self._report if x["canonical"] == "Workday ID"), "MISSING")
-                    if workday_id_status == "MISSING":
-                        self.log(f"  ⚠  CRITICAL MISSING column: [{r['canonical']}] (and Workday ID is also missing)")
-                else:
-                    self.log(f"  ⚠  CRITICAL MISSING column: [{r['canonical']}]")
-                    
-        for w in self._warnings:
-            self.log(f"  ⚠  WARNING: {w}")
+        if not norm.empty:
+            # ── 8. Summary log
+            found   = sum(1 for r in self._report if r["status"] == "FOUND")
+            synth   = sum(1 for r in self._report if r["status"] == "SYNTHESIZED")
+            missing = sum(1 for r in self._report if r["status"] == "MISSING")
+            self.log(f"[Normalizer] Mapping: {found} found, {synth} synthesised, {missing} missing")
+            
+            # Define critical columns for the JV generation process
+            CRITICAL_COLS = {
+                "EmpNo", "Capability Center", "Billed/ Unbilled",
+                "IC Code", "Invoice No.", "Recharge - Payroll", "Recharge - Manager",
+                "Recharge - Leadership", "Recharge - Desk Cost", "Recharge - Retirals", "Mark up"
+            }
+            
+            for r in self._report:
+                if r["status"] == "MISSING" and r["canonical"] in CRITICAL_COLS:
+                    # If EmpNo is missing, check if Workday ID was found instead
+                    if r["canonical"] == "EmpNo":
+                        workday_id_status = next((x["status"] for x in self._report if x["canonical"] == "Workday ID"), "MISSING")
+                        if workday_id_status == "MISSING":
+                            self.log(f"  ⚠  CRITICAL MISSING column: [{r['canonical']}] (and Workday ID is also missing)")
+                    else:
+                        self.log(f"  ⚠  CRITICAL MISSING column: [{r['canonical']}]")
+                        
+            for w in self._warnings:
+                self.log(f"  ⚠  WARNING: {w}")
+        else:
+            self.log("[Normalizer] Stage 1 normalization output has no standard billing rows.")
+
         self.log(f"[Normalizer] Output: {os.path.basename(output_path)}")
-
         return output_path, self._report
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -486,7 +494,7 @@ class BillingNormalizer:
     # ─────────────────────────────────────────────────────────────────────────
     #  Step 6 – Write colour-coded Excel output
     # ─────────────────────────────────────────────────────────────────────────
-    def _write_excel(self, df, output_path):
+    def _write_excel(self, df, output_path, billable_cost_df=None):
         FILL_FOUND  = PatternFill("solid", fgColor="C6EFCE")  # green
         FILL_SYNTH  = PatternFill("solid", fgColor="FFEB9C")  # orange
         FILL_CALC   = PatternFill("solid", fgColor="BDD7EE")  # blue
@@ -494,61 +502,72 @@ class BillingNormalizer:
         HDR_FONT    = Font(bold=True, size=9)
         CENTER      = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
-        # Status lookup for each column
-        status_map = {r["canonical"]: r["status"] for r in self._report}
-
         with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-            df.to_excel(writer, sheet_name="Normalized", index=False)
+            if not df.empty:
+                df.to_excel(writer, sheet_name="Normalized", index=False)
+            if billable_cost_df is not None:
+                billable_cost_df.to_excel(writer, sheet_name="Billable Cost", index=False)
 
         wb = load_workbook(output_path)
-        ws = wb["Normalized"]
+        
+        if not df.empty:
+            ws = wb["Normalized"]
+            status_map = {r["canonical"]: r["status"] for r in self._report}
 
-        for col_idx, col_name in enumerate(df.columns, start=1):
-            cell = ws.cell(row=1, column=col_idx)
-            cell.font      = HDR_FONT
-            cell.alignment = CENTER
-            ws.column_dimensions[get_column_letter(col_idx)].width = 19
+            for col_idx, col_name in enumerate(df.columns, start=1):
+                cell = ws.cell(row=1, column=col_idx)
+                cell.font      = HDR_FONT
+                cell.alignment = CENTER
+                ws.column_dimensions[get_column_letter(col_idx)].width = 19
 
-            st = status_map.get(col_name, "MISSING")
-            if st == "FOUND":
-                cell.fill = FILL_FOUND
-            elif st == "SYNTHESIZED":
-                cell.fill = FILL_SYNTH
-            elif st == "CALCULATED":
-                cell.fill = FILL_CALC
-            else:
-                cell.fill = FILL_MISS
+                st = status_map.get(col_name, "MISSING")
+                if st == "FOUND":
+                    cell.fill = FILL_FOUND
+                elif st == "SYNTHESIZED":
+                    cell.fill = FILL_SYNTH
+                elif st == "CALCULATED":
+                    cell.fill = FILL_CALC
+                else:
+                    cell.fill = FILL_MISS
 
-        ws.freeze_panes = "B2"
+            ws.freeze_panes = "B2"
 
-        # ── Mapping Report sheet
-        rpt = pd.DataFrame(self._report).rename(columns={
-            "canonical":  "Golden Column (Feb Format)",
-            "feb_idx":    "Feb Index",
-            "status":     "Status",
-            "source_col": "Source Column Name",
-            "method":     "Match Method",
-        })
-        ws_r = wb.create_sheet("Mapping Report")
-        ws_r.append(list(rpt.columns))
-        for row in rpt.itertuples(index=False):
-            ws_r.append(list(row))
-        _autofit(ws_r)
+            # ── Mapping Report sheet
+            rpt = pd.DataFrame(self._report).rename(columns={
+                "canonical":  "Golden Column (Feb Format)",
+                "feb_idx":    "Feb Index",
+                "status":     "Status",
+                "source_col": "Source Column Name",
+                "method":     "Match Method",
+            })
+            ws_r = wb.create_sheet("Mapping Report")
+            ws_r.append(list(rpt.columns))
+            for row in rpt.itertuples(index=False):
+                ws_r.append(list(row))
+            _autofit(ws_r)
 
-        # ── Warnings sheet
-        ws_w = wb.create_sheet("Warnings & Actions")
-        ws_w.append(["Type", "Detail"])
-        ws_w.append(["INFO", f"Source rows: {len(df)}  |  Columns: {len(df.columns)}"])
-        ws_w.append(["INFO", "Green header = mapped | Orange = synthesised | Blue = calculated | Red = missing"])
-        ws_w.append(["", ""])
-        for r in self._report:
-            if r["status"] == "MISSING":
-                ws_w.append(["⚠ MISSING", f"'{r['canonical']}' (Feb col {r['feb_idx']}) was not found. Column is blank."])
-        for w in self._warnings:
-            ws_w.append(["⚠ WARNING", w])
-        ws_w.append(["", ""])
-        ws_w.append(["ACTION", "Review the 'Normalized' sheet. Fill red (missing) columns. Then run Stage 2 (JV Generator)."])
-        _autofit(ws_w)
+            # ── Warnings sheet
+            ws_w = wb.create_sheet("Warnings & Actions")
+            ws_w.append(["Type", "Detail"])
+            ws_w.append(["INFO", f"Source rows: {len(df)}  |  Columns: {len(df.columns)}"])
+            ws_w.append(["INFO", "Green header = mapped | Orange = synthesised | Blue = calculated | Red = missing"])
+            ws_w.append(["", ""])
+            for r in self._report:
+                if r["status"] == "MISSING":
+                    ws_w.append(["⚠ MISSING", f"'{r['canonical']}' (Feb col {r['feb_idx']}) was not found. Column is blank."])
+            for w in self._warnings:
+                ws_w.append(["⚠ WARNING", w])
+            ws_w.append(["", ""])
+            ws_w.append(["ACTION", "Review the 'Normalized' sheet. Fill red (missing) columns. Then run Stage 2 (JV Generator)."])
+            _autofit(ws_w)
+        else:
+            # Create a simple Summary sheet since Normalized is empty
+            ws_s = wb.create_sheet("Summary")
+            ws_s.append(["Status", "Info"])
+            ws_s.append(["Info", "No standard billing sheet processed."])
+            if billable_cost_df is not None:
+                ws_s.append(["Info", f"Billable Cost sheet copied: {len(billable_cost_df)} rows."])
+            _autofit(ws_s)
 
         wb.save(output_path)
 

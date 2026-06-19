@@ -192,63 +192,112 @@ class JVEngine:
         df["gl_842028"] = s(34) + s(36)
         return df
 
-    def run_processing(self, filepath, log_callback=print, api_key=None):
+    def run_processing(self, filepath, standard_sheet=None, billable_cost_sheet=None, log_callback=print, api_key=None):
         """Full processing pipeline."""
         log_callback(f"Loading {os.path.basename(filepath)}...")
         xls = pd.ExcelFile(filepath)
-        if "Normalized" in xls.sheet_names:
-            log_callback("Stage 2: Using Stage-1 normalized sheet.")
-            df = self._load_normalized_data(filepath)
-        elif "Billing sheet" in xls.sheet_names:
-            log_callback("Stage 2: Normalized sheet not found. Using legacy raw-sheet fallback.")
-            df = self._load_legacy_billing_data(filepath, log_callback)
-        else:
-            # Try flexible manual/filter-check sheet loader on first sheet
-            first = xls.sheet_names[0]
-            log_callback(f"Stage 2: No 'Normalized' or 'Billing sheet'. Trying manual sheet loader on '{first}'")
-            try:
-                df = self._load_manual_sheet(filepath, first, log_callback)
-            except Exception:
-                raise ValueError("Input file must contain 'Normalized' or 'Billing sheet' sheet, or a manual filter-check sheet with expected columns.")
+        sheet_names = xls.sheet_names
 
-        log_callback("Filtering and reconciling data...")
-        # Do not invert a generic input Amount column here.
-        # The JV row builder applies the required sign convention for debit and credit lines.
-        pre = df.copy()
-        for col in ["workday_id", "cap_center", "legal_entity", "classification", "billed_status", "ic_code", "invoice_no", "emp_no_ref", "cap_center_ref"]:
-            df[col] = df[col].astype(str).str.strip()
-        for col in ["workday_id", "classification", "billed_status", "invoice_no"]:
-            pre[col] = pre[col].astype(str).str.strip()
+        # If both are None, auto-detect sheets
+        if standard_sheet is None and billable_cost_sheet is None:
+            # Determine standard billing sheet name
+            if "Normalized" in sheet_names:
+                standard_sheet = "Normalized"
+            elif "Billing sheet" in sheet_names:
+                standard_sheet = "Billing sheet"
+            else:
+                # Pick first sheet that is NOT Billable Cost
+                candidates = [s for s in sheet_names if "billable cost" not in s.lower()]
+                if candidates:
+                    standard_sheet = candidates[0]
 
-        df = df[df["workday_id"].isin(["", "nan", "None"]) == False]
-        df = df[
-            (df["classification"].str.lower() == "billable") &
-            (df["billed_status"].str.lower() == "billed")
-        ]
-        df = df[~df["invoice_no"].isin(["", "nan", "None"])]
+            # Determine Billable Cost sheet name
+            for s in sheet_names:
+                if "billable cost" in s.lower():
+                    billable_cost_sheet = s
+                    break
 
-        self.last_filter_check = self._build_filter_check(pre, df)
-        log_callback(
-            f"Filter Check: total={self.last_filter_check['total_rows']}, "
-            f"used={self.last_filter_check['rows_used_for_jv']}, "
-            f"excluded={self.last_filter_check['excluded_rows']}"
-        )
-        
-        for col in self.GL_COL_NAMES:
-            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
+        if billable_cost_sheet == "[Skip / None]":
+            billable_cost_sheet = None
+
+        if standard_sheet == "[Skip / None]":
+            standard_sheet = None
+
+        rows = []
+        serial_counter = self.config.get("START_SERIAL_NO", 1)
+
+        # 1. Process standard billing sheet if present
+        if standard_sheet:
+            log_callback(f"Stage 2: Processing standard billing sheet '{standard_sheet}'...")
+            if standard_sheet == "Normalized":
+                df_std = self._load_normalized_data(filepath)
+            elif standard_sheet == "Billing sheet":
+                df_std = self._load_legacy_billing_data(filepath, log_callback)
+            else:
+                df_std = self._load_manual_sheet(filepath, standard_sheet, log_callback)
+
+            log_callback("Filtering and reconciling standard data...")
+            pre = df_std.copy()
+            for col in ["workday_id", "cap_center", "legal_entity", "classification", "billed_status", "ic_code", "invoice_no", "emp_no_ref", "cap_center_ref"]:
+                df_std[col] = df_std[col].astype(str).str.strip()
+            for col in ["workday_id", "classification", "billed_status", "invoice_no"]:
+                pre[col] = pre[col].astype(str).str.strip()
+
+            df_std = df_std[df_std["workday_id"].isin(["", "nan", "None"]) == False]
+            df_std = df_std[
+                (df_std["classification"].str.lower() == "billable") &
+                (df_std["billed_status"].str.lower() == "billed")
+            ]
+            df_std = df_std[~df_std["invoice_no"].isin(["", "nan", "None"])]
+
+            self.last_filter_check = self._build_filter_check(pre, df_std)
+            log_callback(
+                f"Filter Check: total={self.last_filter_check['total_rows']}, "
+                f"used={self.last_filter_check['rows_used_for_jv']}, "
+                f"excluded={self.last_filter_check['excluded_rows']}"
+            )
+
+            for col in self.GL_COL_NAMES:
+                df_std[col] = pd.to_numeric(df_std[col], errors="coerce").fillna(0.0)
+
+            # Aggregate duplicate employee rows under the same invoice
+            group_cols = ["invoice_no", "workday_id", "emp_no_ref"]
+            agg_dict = {}
+            for c in df_std.columns:
+                if c in self.GL_COL_NAMES:
+                    agg_dict[c] = "sum"
+                elif c not in group_cols:
+                    agg_dict[c] = "first"
+            df_std = df_std.groupby(group_cols, as_index=False).agg(agg_dict)
+            df_std = df_std.sort_values(by=["invoice_no", "workday_id"]).reset_index(drop=True)
+
+            if not df_std.empty:
+                std_rows = self._build_rows(df_std, start_serial=serial_counter, offset=len(rows))
+                rows.extend(std_rows)
+                
+                # Update serial counter for continuation
+                max_ref = serial_counter
+                for r in std_rows:
+                    ref_val = r.get("Reference")
+                    if ref_val is not None and isinstance(ref_val, (int, float)):
+                        max_ref = max(max_ref, int(ref_val))
+                serial_counter = max_ref + 1
+            else:
+                log_callback("No standard billing rows used for JV.")
+
+        # 2. Process Billable Cost sheet if present
+        if billable_cost_sheet:
+            log_callback(f"Stage 2: Processing Billable Cost sheet '{billable_cost_sheet}'...")
+            df_bc = pd.read_excel(filepath, sheet_name=billable_cost_sheet, dtype=str).fillna("")
             
-        # Aggregate duplicate employee rows under the same invoice
-        group_cols = ["invoice_no", "workday_id", "emp_no_ref"]
-        agg_dict = {}
-        for c in df.columns:
-            if c in self.GL_COL_NAMES:
-                agg_dict[c] = "sum"
-            elif c not in group_cols:
-                agg_dict[c] = "first"
-        df = df.groupby(group_cols, as_index=False).agg(agg_dict)
-            
-        df = df.sort_values(by=["invoice_no", "workday_id"]).reset_index(drop=True)
-        return self._build_rows(df)
+            df_bc_filtered = self._filter_billable_cost_data(df_bc, log_callback)
+            if not df_bc_filtered.empty:
+                bc_rows = self._build_billable_cost_rows(df_bc_filtered, serial_counter, offset=len(rows), log_callback=log_callback)
+                rows.extend(bc_rows)
+            else:
+                log_callback("No Billable Cost rows used for JV.")
+
+        return rows
 
     def _load_manual_sheet(self, filepath, sheet_name, log_callback):
         """Load a user-provided sheet that already contains the filter-check columns.
@@ -433,11 +482,11 @@ class JVEngine:
             return "40" if amt > 0 else "50"
         return "01" if amt > 0 else "11"
 
-    def _build_rows(self, df):
+    def _build_rows(self, df, start_serial=1, offset=0):
         doc_header = f"Revenue Reclass {self.MONTH_LABEL}"
         all_invoices = df["invoice_no"].unique()
         rows = []
-        serial_counter = 1
+        serial_counter = start_serial
 
         for inv in all_invoices:
             inv_df = df[df["invoice_no"] == inv]
@@ -480,7 +529,7 @@ class JVEngine:
                     "Reference": int(serial_counter), "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
                     "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
                     "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
-                    "Amount": f"=-SUM(J{len(rows) + 3}:J{len(rows) + len(batch) + 2})",
+                    "Amount": f"=-SUM(J{offset + len(rows) + 3}:J{offset + len(rows) + len(batch) + 2})",
                     "Posting Key": self._get_posting_key(self.CREDIT_ACCOUNT, 1.0),
                     "Account": self.CREDIT_ACCOUNT, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
                     "Assignment Number (20)": inv, "Item Text (50)": doc_header,
@@ -493,6 +542,117 @@ class JVEngine:
                 rows.append({k: None for k in cr.keys()}) # spacer
                 serial_counter += 1
                 i += batch_max
+        return rows
+
+    def _filter_billable_cost_data(self, df, log_callback):
+        # 1. Detect G/L column header (6 digit numeric column)
+        gl_col_header = None
+        for col in df.columns:
+            col_str = str(col).strip()
+            if col_str.isdigit() and len(col_str) == 6:
+                gl_col_header = col
+                break
+        if gl_col_header is None:
+            # Fallback to index 2 if present
+            if len(df.columns) > 2:
+                gl_col_header = df.columns[2]
+            else:
+                raise ValueError("Billable Cost sheet must have at least 3 columns.")
+
+        log_callback(f"Billable Cost G/L column header: {gl_col_header}")
+
+        df_bc = df.copy()
+        if len(df_bc.columns) < 5:
+            raise ValueError(f"Billable Cost sheet must have at least 5 columns. Found: {list(df_bc.columns)}")
+
+        df_bc = df_bc.rename(columns={
+            df_bc.columns[0]: "ref_key_1",
+            df_bc.columns[1]: "assignment_number",
+            gl_col_header: "amount",
+            df_bc.columns[3]: "ref_key_3",
+            df_bc.columns[4]: "ref_key_2"
+        })
+
+        # Save G/L code
+        try:
+            self._bc_gl_code = int(float(str(gl_col_header).strip()))
+        except Exception:
+            self._bc_gl_code = 742118
+
+        df_bc["assignment_number"] = df_bc["assignment_number"].astype(str).str.strip()
+        # Filter descriptive row and blanks
+        df_bc = df_bc[~df_bc["assignment_number"].str.lower().isin(["", "nan", "none", "invoice no."])]
+        df_bc["amount"] = pd.to_numeric(df_bc["amount"], errors="coerce").fillna(0.0)
+        df_bc = df_bc[df_bc["amount"] != 0.0]
+
+        df_bc["ref_key_1"] = df_bc["ref_key_1"].astype(str).str.strip()
+        df_bc["ref_key_3"] = df_bc["ref_key_3"].astype(str).str.strip()
+        df_bc["ref_key_2"] = df_bc["ref_key_2"].astype(str).str.strip()
+
+        return df_bc
+
+    def _build_billable_cost_rows(self, df, start_serial, offset=0, log_callback=print):
+        doc_header = f"Revenue Reclass {self.MONTH_LABEL}"
+        rows = []
+        serial_counter = start_serial
+
+        # Group and aggregate
+        group_cols = ["assignment_number", "ref_key_1", "ref_key_3", "ref_key_2"]
+        df_grouped = df.groupby(group_cols, as_index=False)["amount"].sum()
+        df_grouped = df_grouped.sort_values(by=["assignment_number", "ref_key_3"]).reset_index(drop=True)
+
+        gl_code = getattr(self, "_bc_gl_code", 742118)
+        all_invoices = df_grouped["assignment_number"].unique()
+
+        for inv in all_invoices:
+            inv_df = df_grouped[df_grouped["assignment_number"] == inv]
+            ic_code = inv_df.iloc[0]["ref_key_1"]
+            debits = []
+
+            for _, item in inv_df.iterrows():
+                amt_val = float(item["amount"])
+                posting_key = self._get_posting_key(gl_code, amt_val)
+
+                r = self._get_full_row()
+                r.update({
+                    "Reference": 0, "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
+                    "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
+                    "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
+                    "Amount": self.d2(amt_val), "Posting Key": posting_key,
+                    "Account": gl_code, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
+                    "Assignment Number (20)": inv, "Item Text (50)": doc_header,
+                    "Ref Key 1": ic_code, "Ref Key 2": item["ref_key_3"], "Ref Key 3 (20)": item["ref_key_2"],
+                    "Inovice Receipt Date": self.MONTH_END_DATE
+                })
+                debits.append(r)
+
+            if not debits: continue
+
+            batch_max = self.MAX_LINES_PER_JV - 1
+            i = 0
+            while i < len(debits):
+                batch = debits[i:i+batch_max]
+
+                cr = self._get_full_row()
+                cr.update({
+                    "Reference": int(serial_counter), "Document Date": self.MONTH_END_DATE, "Document Type": self.DOC_TYPE,
+                    "Company Code": self.COMPANY_CODE, "Posting Date": self.MONTH_END_DATE,
+                    "Reference.1": inv, "Document Header Text": doc_header, "Currency": self.CURRENCY,
+                    "Amount": f"=-SUM(J{offset + len(rows) + 3}:J{offset + len(rows) + len(batch) + 2})",
+                    "Posting Key": self._get_posting_key(self.CREDIT_ACCOUNT, 1.0),
+                    "Account": self.CREDIT_ACCOUNT, "Cost Center": self.COST_CENTER, "Profit Center": self.PROFIT_CENTER,
+                    "Assignment Number (20)": inv, "Item Text (50)": doc_header,
+                    "Ref Key 1": ic_code, "Inovice Receipt Date": self.MONTH_END_DATE
+                })
+                for d in batch: d["Reference"] = int(serial_counter)
+
+                rows.append(cr)
+                rows.extend(batch)
+                rows.append({k: None for k in cr.keys()}) # spacer
+                serial_counter += 1
+                i += batch_max
+
+        log_callback(f"Generated {len(rows)} rows for Billable Cost JVs. Ending Reference: {serial_counter - 1}")
         return rows
 
     def write_excel(self, rows, out_path, log_callback=print):

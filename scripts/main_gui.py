@@ -64,21 +64,41 @@ class App(ctk.CTk):
         self.lbl_file = ctk.CTkLabel(self.main_frame, text="No file selected", text_color="gray")
         self.lbl_file.grid(row=2, column=0, padx=20, pady=0)
 
+        # Sheet Selection Frame (disabled/hidden initially)
+        self.sheets_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.sheets_frame.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
+        self.sheets_frame.grid_columnconfigure(0, weight=1)
+        self.sheets_frame.grid_columnconfigure(1, weight=1)
+
+        # Left Column: Standard JV Sheet dropdown
+        self.lbl_std_sheet = ctk.CTkLabel(self.sheets_frame, text="Standard JV Billing Sheet:", anchor="w")
+        self.lbl_std_sheet.grid(row=0, column=0, padx=10, pady=(5, 2), sticky="w")
+        
+        self.std_sheet_menu = ctk.CTkOptionMenu(self.sheets_frame, values=["[Select a file first]"], state="disabled")
+        self.std_sheet_menu.grid(row=1, column=0, padx=10, pady=(2, 5), sticky="ew")
+
+        # Right Column: Billable Cost Sheet dropdown
+        self.lbl_bc_sheet = ctk.CTkLabel(self.sheets_frame, text="Billable Cost Sheet (Optional):", anchor="w")
+        self.lbl_bc_sheet.grid(row=0, column=1, padx=10, pady=(5, 2), sticky="w")
+        
+        self.bc_sheet_menu = ctk.CTkOptionMenu(self.sheets_frame, values=["[Select a file first]"], state="disabled")
+        self.bc_sheet_menu.grid(row=1, column=1, padx=10, pady=(2, 5), sticky="ew")
+
         # Single Run Button (auto-normalize + generate)
         self.btn_run = ctk.CTkButton(self.main_frame, text="GENERATE SAP JV", height=50,
                                      font=ctk.CTkFont(size=16, weight="bold"),
                                      fg_color="#285", hover_color="#274",
                                      command=self.start_processing)
-        self.btn_run.grid(row=3, column=0, padx=40, pady=(20, 30), sticky="ew")
+        self.btn_run.grid(row=4, column=0, padx=40, pady=(20, 30), sticky="ew")
 
         # Console
         self.textbox = ctk.CTkTextbox(self.main_frame, height=150)
-        self.textbox.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
+        self.textbox.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
         self.textbox.insert("0.0", "System ready.\n")
 
         # Output Actions Frame
         self.actions_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.actions_frame.grid(row=5, column=0, padx=20, pady=(10, 20), sticky="ew")
+        self.actions_frame.grid(row=6, column=0, padx=20, pady=(10, 20), sticky="ew")
         self.actions_frame.grid_columnconfigure(0, weight=1)
         self.actions_frame.grid_columnconfigure(1, weight=1)
 
@@ -107,6 +127,49 @@ class App(ctk.CTk):
             self.normalized_path = ""
             self.lbl_file.configure(text=os.path.basename(filename), text_color="white")
             self.log(f"Selected: {filename}")
+            
+            try:
+                xls = pd.ExcelFile(filename)
+                sheet_names = xls.sheet_names
+                self.log(f"Workbook sheets: {sheet_names}")
+                
+                # Update option menus
+                std_values = ["[Skip / None]"] + sheet_names
+                bc_values = ["[Skip / None]"] + sheet_names
+                
+                self.std_sheet_menu.configure(values=std_values, state="normal")
+                self.bc_sheet_menu.configure(values=bc_values, state="normal")
+                
+                # Auto-detect default sheet selections
+                default_std = "[Skip / None]"
+                default_bc = "[Skip / None]"
+                
+                # Look for standard billing sheet candidates
+                for s in sheet_names:
+                    if "billing" in s.lower() or s == "Normalized":
+                        default_std = s
+                        break
+                if default_std == "[Skip / None]" and sheet_names:
+                    # If not found, try to pick the first sheet that is not billable cost
+                    non_bc = [s for s in sheet_names if "billable cost" not in s.lower()]
+                    if non_bc:
+                        default_std = non_bc[0]
+                    else:
+                        default_std = sheet_names[0]
+                        
+                # Look for billable cost candidates
+                for s in sheet_names:
+                    if "billable cost" in s.lower():
+                        default_bc = s
+                        break
+                        
+                self.std_sheet_menu.set(default_std)
+                self.bc_sheet_menu.set(default_bc)
+                self.log(f"Auto-selected Standard Billing Sheet: '{default_std}', Billable Cost Sheet: '{default_bc}'")
+            except Exception as e:
+                self.log(f"Failed to read sheet names: {e}")
+                self.std_sheet_menu.configure(values=["[Error reading sheets]"], state="disabled")
+                self.bc_sheet_menu.configure(values=["[Error reading sheets]"], state="disabled")
 
     def log(self, msg):
         self.textbox.insert("end", f"[{threading.current_thread().name}] {msg}\n")
@@ -118,6 +181,13 @@ class App(ctk.CTk):
     def start_processing(self):
         if not self.input_path:
             messagebox.showwarning("Error", "Please select a file first.")
+            return
+        
+        # Check if both sheets are skipped
+        selected_std = self.std_sheet_menu.get()
+        selected_bc = self.bc_sheet_menu.get()
+        if selected_std == "[Skip / None]" and selected_bc == "[Skip / None]":
+            messagebox.showwarning("Error", "Please select at least one sheet to process.")
             return
         
         self.btn_run.configure(state="disabled")
@@ -134,23 +204,40 @@ class App(ctk.CTk):
             config = {
                 "MONTH_LABEL": m_label,
                 "MONTH_END_DATE": m_date,
-                "COMPANY_CODE": int(c_code)
+                "COMPANY_CODE": int(c_code),
+                "START_SERIAL_NO": 1
             }
 
+            # Get selected sheets from option menus
+            selected_std = self.std_sheet_menu.get()
+            selected_bc = self.bc_sheet_menu.get()
+
             # Auto-normalize when input is not already a Stage-1 normalized workbook
-            xls = pd.ExcelFile(self.input_path)
-            if "Normalized" in xls.sheet_names:
+            if selected_std == "Normalized":
                 self.normalized_path = self.input_path
                 self.log("Detected normalized input. Skipping Stage 1.")
+                engine_std_sheet = "Normalized"
+                engine_bc_sheet = selected_bc
             else:
                 self.log("Running Stage 1 normalization automatically...")
                 normalizer = BillingNormalizer(log_callback=self.log)
-                out_path, _ = normalizer.normalize(self.input_path)
+                out_path, _ = normalizer.normalize(
+                    self.input_path,
+                    standard_sheet=selected_std,
+                    billable_cost_sheet=selected_bc
+                )
                 self.normalized_path = out_path
                 self.log(f"Normalization complete: {os.path.basename(out_path)}")
+                engine_std_sheet = "Normalized" if selected_std != "[Skip / None]" else None
+                engine_bc_sheet = "Billable Cost" if selected_bc != "[Skip / None]" else None
             
             engine = JVEngine(config)
-            rows = engine.run_processing(self.normalized_path, log_callback=self.log)
+            rows = engine.run_processing(
+                self.normalized_path,
+                standard_sheet=engine_std_sheet,
+                billable_cost_sheet=engine_bc_sheet,
+                log_callback=self.log
+            )
             
             self.log("Finalizing Excel file structure...")
             safe_label = m_label.replace("'", "").replace(" ", "_")
